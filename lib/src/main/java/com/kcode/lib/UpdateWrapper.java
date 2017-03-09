@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.kcode.lib.bean.VersionModel;
 import com.kcode.lib.dialog.UpdateActivity;
 import com.kcode.lib.net.CheckUpdateTask;
+import com.kcode.lib.utils.PublicFunctionUtils;
 
 /**
  * Created by caik on 2017/3/8.
@@ -22,7 +23,12 @@ public class UpdateWrapper {
     }
 
     public void start() {
-        new CheckUpdateTask(url, time, new CheckUpdateTask.Callback() {
+
+        if (checkUpdateTime(time)) {
+            return;
+        }
+
+        new CheckUpdateTask(url, new CheckUpdateTask.Callback() {
             @Override
             public void callBack(VersionModel model) {
                 if (model == null) {
@@ -35,8 +41,18 @@ public class UpdateWrapper {
         }).start();
     }
 
+    private boolean checkUpdateTime(long time) {
+        long lastCheckUpdateTime = PublicFunctionUtils.getLastCheckTime(mContext);
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastCheckUpdateTime > time ){
+            return false;
+        }
+        return true;
+    }
+
     private void start2Activity(Context context, VersionModel model) {
         Intent intent = new Intent(context, UpdateActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("model", model);
         context.startActivity(intent);
     }

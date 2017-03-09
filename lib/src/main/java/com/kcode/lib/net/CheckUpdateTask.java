@@ -23,7 +23,7 @@ public class CheckUpdateTask extends Thread {
 
     private OkHttpClient mOkHttpClient = new OkHttpClient();
 
-    public CheckUpdateTask(String checkUpdateUrl,long time, Callback callBack) {
+    public CheckUpdateTask(String checkUpdateUrl, Callback callBack) {
         mCheckUpdateUrl = checkUpdateUrl;
         this.mCallBack = callBack;
     }

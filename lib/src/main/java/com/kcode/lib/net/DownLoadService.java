@@ -1,79 +1,97 @@
 package com.kcode.lib.net;
 
-import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
+import android.os.Environment;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
-import com.kcode.lib.bean.VersionModel;
-import com.kcode.lib.common.Constant;
-import com.kcode.lib.dialog.UpdateActivity;
-import com.kcode.lib.log.L;
-import com.kcode.lib.utils.PackageUtils;
+import com.kcode.lib.utils.FileUtils;
 
-import java.io.IOException;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import java.io.File;
 
 /**
  * Created by caik on 2017/3/8.
  */
 
-public class DownLoadService extends IntentService {
+public class DownLoadService extends Service {
 
-    private static final String TAG = "DownLoadService";
-
-    private String url;
-    private long time;
-
-    private OkHttpClient mOkHttpClient = new OkHttpClient();
-
-    public DownLoadService() {
-        super(DownLoadService.class.getSimpleName());
-    }
+    private String filePath;
+    private boolean isBackground = false;
+    private DownLoadTask mDownLoadTask;
+    private DownLoadTask.ProgressListener mProgressListener;
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        initData(intent);
-        try {
-            String result = requestVersionFromServer();
-            VersionModel model = new VersionModel();
-            model.parse(result);
-            showDialogIfNeedUpdate(model);
+    public void onCreate() {
+        super.onCreate();
+    }
 
-        } catch (IOException e) {
-            isLatest();
-            L.e(TAG,"服务器请求失败");
+    public void startDownLoad(String url) {
+        filePath = getFilePath(url);
+        mDownLoadTask = new DownLoadTask(filePath, url, new DownLoadTask.ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength, boolean done) {
+
+                if (done && isBackground) {
+                    //下载完成，直接进行安装
+                    startActivity(FileUtils.openApkFile(new File(filePath)));
+                    return;
+                }
+                if (mProgressListener != null){
+                    mProgressListener.update(bytesRead, contentLength, done);
+                }
+
+
+            }
+        });
+        mDownLoadTask.start();
+    }
+
+    public void setBackground(boolean background) {
+        isBackground = background;
+    }
+
+    private String getFilePath(String url) {
+        String filePath = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        String fileName;
+        if (url.endsWith(".apk")) {
+            int index = url.lastIndexOf("/");
+            if (index != -1) {
+                fileName = url.substring(index);
+            } else {
+                fileName = getPackageName() + ".apk";
+            }
+        } else {
+            fileName = getPackageName() + ".apk";
+        }
+
+        File file = new File(filePath, fileName);
+        return file.getAbsolutePath();
+    }
+
+    private final DownLoadBinder mDownLoadBinder = new DownLoadBinder();
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mDownLoadBinder;
+    }
+
+    public void cancel() {
+        mDownLoadTask.cancel();
+        mDownLoadTask.interrupt();
+        mDownLoadTask = null;
+    }
+
+    public class DownLoadBinder extends Binder {
+        public DownLoadService getService() {
+            return DownLoadService.this;
         }
     }
 
-    private void initData(Intent intent) {
-        url = intent.getStringExtra(Constant.URL);
-        time = intent.getLongExtra(Constant.TIME, 0);
+    public void registerProgressListener(DownLoadTask.ProgressListener progressListener) {
+        mProgressListener = progressListener;
     }
 
-    private String requestVersionFromServer() throws IOException {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        Response response = mOkHttpClient.newCall(request).execute();
-        return response.body().toString();
-    }
-
-    private void showDialogIfNeedUpdate(VersionModel model) {
-        if (model.getVersionCode() > PackageUtils.getVersionCode(getApplicationContext())) {
-            L.d(TAG,"有版本更新");
-            Intent intent = new Intent(DownLoadService.this, UpdateActivity.class);
-            startActivity(intent);
-        }else {
-            isLatest();
-        }
-    }
-
-    private void isLatest() {
-        Toast.makeText(getApplicationContext(), "当前已是最新版本", Toast.LENGTH_SHORT).show();
-    }
 }

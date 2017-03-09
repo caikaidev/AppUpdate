@@ -1,8 +1,13 @@
 package com.kcode.lib.dialog;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -16,6 +21,7 @@ import android.widget.Toast;
 
 import com.kcode.lib.R;
 import com.kcode.lib.log.L;
+import com.kcode.lib.net.DownLoadService;
 import com.kcode.lib.net.DownLoadTask;
 import com.kcode.lib.utils.FileUtils;
 
@@ -34,7 +40,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private Button mBtnBackground;
     private TextView mTvTitle;
     private ProgressBar mProgressBar;
-    private DownLoadTask mDownLoadTask;
+    private DownLoadService mDownLoadService;
 
     public static DownLoadDialog newInstance(String downLoadUrl) {
 
@@ -65,27 +71,46 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         mProgressBar.setMax(100);
 
-        mDownLoadTask = new DownLoadTask(getFilePath(), mDownloadUrl, new DownLoadTask.ProgressListener() {
-            @Override
-            public void update(final long bytesRead, final long contentLength, final boolean done) {
+        Intent intent = new Intent(getContext(), DownLoadService.class);
+        intent.putExtra("url", mDownloadUrl);
+        getActivity().bindService(intent,mConnection , Context.BIND_AUTO_CREATE);
 
-                int current = (int) (bytesRead * 100 / contentLength);
-                if (current < 1) {
-                    current = 1;
-                }
-                L.d(TAG, "" + bytesRead + "," + contentLength + ";current=" + current);
-                Message message = mHandler.obtainMessage();
-                message.what = done ? DONE : LOADING;
-                message.arg1 = current;
-                Bundle bundle = new Bundle();
-                bundle.putLong("bytesRead", bytesRead);
-                bundle.putLong("contentLength", contentLength);
-                message.setData(bundle);
-                message.sendToTarget();
-            }
-        });
-        mDownLoadTask.start();
     }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            DownLoadService.DownLoadBinder binder = (DownLoadService.DownLoadBinder) service;
+            mDownLoadService = binder.getService();
+            mDownLoadService.registerProgressListener(mProgressListener);
+            mDownLoadService.startDownLoad(mDownloadUrl);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mDownLoadService = null;
+        }
+    };
+
+    private DownLoadTask.ProgressListener mProgressListener = new DownLoadTask.ProgressListener() {
+        @Override
+        public void update(final long bytesRead, final long contentLength, final boolean done) {
+
+            int current = (int) (bytesRead * 100 / contentLength);
+            if (current < 1) {
+                current = 1;
+            }
+            L.d(TAG, "" + bytesRead + "," + contentLength + ";current=" + current);
+            Message message = mHandler.obtainMessage();
+            message.what = done ? DONE : LOADING;
+            message.arg1 = current;
+            Bundle bundle = new Bundle();
+            bundle.putLong("bytesRead", bytesRead);
+            bundle.putLong("contentLength", contentLength);
+            message.setData(bundle);
+            message.sendToTarget();
+        }
+    };
 
     private String getFilePath() {
         String filePath = getContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
@@ -116,15 +141,14 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     }
 
     private void doCancel() {
-        mDownLoadTask.cancel();
-        mDownLoadTask.interrupt();
-        mDownLoadTask = null;
-
+        mDownLoadService.cancel();
+        getActivity().unbindService(mConnection);
         getActivity().finish();
         Toast.makeText(getContext(), "已取消更新", Toast.LENGTH_SHORT).show();
     }
 
     private void doBackground() {
+        mDownLoadService.setBackground(true);
         getActivity().finish();
         Toast.makeText(getContext(), "正在后台进行更新", Toast.LENGTH_SHORT).show();
     }

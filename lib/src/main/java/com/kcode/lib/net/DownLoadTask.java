@@ -99,6 +99,7 @@ public class DownLoadTask extends Thread {
         }
     }
 
+
     private static class ProgressResponseBody extends ResponseBody {
 
         private final ResponseBody responseBody;
