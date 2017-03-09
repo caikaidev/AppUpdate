@@ -36,6 +36,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private static final String TAG = "DownLoadDialog";
     private static final String TITLE_FORMAT = "正在下载（%s/%s）";
     private String mDownloadUrl;
+    private int currentProgress;
     private Button mBtnCancel;
     private Button mBtnBackground;
     private TextView mTvTitle;
@@ -96,14 +97,14 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         @Override
         public void update(final long bytesRead, final long contentLength, final boolean done) {
 
-            int current = (int) (bytesRead * 100 / contentLength);
-            if (current < 1) {
-                current = 1;
+            currentProgress = (int) (bytesRead * 100 / contentLength);
+            if (currentProgress < 1) {
+                currentProgress = 1;
             }
-            L.d(TAG, "" + bytesRead + "," + contentLength + ";current=" + current);
+            L.d(TAG, "" + bytesRead + "," + contentLength + ";current=" + currentProgress);
             Message message = mHandler.obtainMessage();
             message.what = done ? DONE : LOADING;
-            message.arg1 = current;
+            message.arg1 = currentProgress;
             Bundle bundle = new Bundle();
             bundle.putLong("bytesRead", bytesRead);
             bundle.putLong("contentLength", contentLength);
@@ -149,6 +150,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
 
     private void doBackground() {
         mDownLoadService.setBackground(true);
+        mDownLoadService.showNotification(currentProgress);
         getActivity().finish();
         Toast.makeText(getContext(), "正在后台进行更新", Toast.LENGTH_SHORT).show();
     }

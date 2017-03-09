@@ -1,12 +1,15 @@
 package com.kcode.lib.net;
 
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 
+import com.kcode.lib.R;
 import com.kcode.lib.utils.FileUtils;
 
 import java.io.File;
@@ -21,10 +24,14 @@ public class DownLoadService extends Service {
     private boolean isBackground = false;
     private DownLoadTask mDownLoadTask;
     private DownLoadTask.ProgressListener mProgressListener;
+    private NotificationManager mNotificationManager;
+    private NotificationCompat.Builder mBuilder;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
     }
 
     public void startDownLoad(String url) {
@@ -33,12 +40,20 @@ public class DownLoadService extends Service {
             @Override
             public void update(long bytesRead, long contentLength, boolean done) {
 
-                if (done && isBackground) {
-                    //下载完成，直接进行安装
-                    startActivity(FileUtils.openApkFile(new File(filePath)));
+                if (isBackground) {
+                    if (done) {
+                        //下载完成，直接进行安装
+                        startActivity(FileUtils.openApkFile(new File(filePath)));
+                    } else {
+                        int currentProgress = (int) (bytesRead * 100 / contentLength);
+                        if (currentProgress < 1) {
+                            currentProgress = 1;
+                        }
+                        notification(currentProgress);
+                    }
                     return;
                 }
-                if (mProgressListener != null){
+                if (mProgressListener != null) {
                     mProgressListener.update(bytesRead, contentLength, done);
                 }
 
@@ -92,6 +107,21 @@ public class DownLoadService extends Service {
 
     public void registerProgressListener(DownLoadTask.ProgressListener progressListener) {
         mProgressListener = progressListener;
+    }
+
+    public void showNotification(int current) {
+        mBuilder = new NotificationCompat.Builder(this);
+        mBuilder.setContentTitle("文件下载")
+                .setContentText("正在下载中...")
+                .setSmallIcon(R.drawable.ic_launcher);
+        mBuilder.setProgress(100, current, false);
+        mNotificationManager.notify(0, mBuilder.build());
+
+    }
+
+    private void notification(int current) {
+        mBuilder.setProgress(100, current, false);
+        mNotificationManager.notify(0, mBuilder.build());
     }
 
 }
