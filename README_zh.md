@@ -1,11 +1,11 @@
 # AppUpdate
-android app update library
+Android app 检查更新库
 
-### Screenshot
+### 屏幕截图
 
-### Usage
+### 使用
 
-### Library
+### 使用的库
 
 + com.android.support:appcompat-v7:25.2.0
 + com.squareup.okhttp3:okhttp:3.6.0
