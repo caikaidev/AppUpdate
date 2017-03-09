@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:padding="0dp">
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_update_lib_dialog_bg"
+        android:orientation="vertical"
+        android:padding="12dp"
+        tools:context="com.kcode.lib.dialog.UpdateActivity">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:elevation="3dp"
+            android:gravity="center|left"
+            android:text="正在下载"
+            android:textColor="#525252"
+            android:textSize="18sp"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|right"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/selector_update_lib_download_dialog_button"
+                android:text="停止下载"
+                style="?android:attr/borderlessButtonStyle"
+                android:textColor="#4a4a4a"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/btnBackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_update_lib_download_dialog_button"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="后台下载"
+                android:textColor="#4a4a4a"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>
