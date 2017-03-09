@@ -12,6 +12,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        UpdateWrapper.get().checkUpdate(this,"http://114.55.236.165/logistical/app/update.json");
+        UpdateWrapper updateWrapper = new UpdateWrapper.Builder(getApplicationContext())
+                .setTime(0)
+                .setUrl("http://114.55.236.165/logistical/app/update.json").build();
+
+        updateWrapper.start();
     }
 }

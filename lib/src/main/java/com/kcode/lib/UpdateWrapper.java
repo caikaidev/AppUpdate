@@ -1,6 +1,5 @@
 package com.kcode.lib;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
@@ -15,42 +14,52 @@ import com.kcode.lib.net.CheckUpdateTask;
 
 public class UpdateWrapper {
 
-    private static UpdateWrapper updateWrapper;
+    private Context mContext;
+    private String url;
+    private long time;
 
-    public static UpdateWrapper get() {
-        if (updateWrapper == null) {
-            synchronized (UpdateWrapper.class) {
-                if (updateWrapper == null){
-                    updateWrapper = new UpdateWrapper();
-                }
-            }
-        }
-
-        return updateWrapper;
-    }
-    private UpdateWrapper() {}
-
-    public void checkUpdate(Activity context, String url){
-        checkUpdate(context, url,0);
+    private UpdateWrapper() {
     }
 
-    public void checkUpdate(final Activity context, String url, long time){
-        new CheckUpdateTask(url, new CheckUpdateTask.Callback() {
+    public void start() {
+        new CheckUpdateTask(url, time, new CheckUpdateTask.Callback() {
             @Override
             public void callBack(VersionModel model) {
                 if (model == null) {
-                    Toast.makeText(context, "最新版本", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "最新版本", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                start2Activity(context, model);
+                start2Activity(mContext, model);
             }
         }).start();
     }
 
-    private void start2Activity(Context context,VersionModel model) {
+    private void start2Activity(Context context, VersionModel model) {
         Intent intent = new Intent(context, UpdateActivity.class);
         intent.putExtra("model", model);
         context.startActivity(intent);
+    }
+
+    public static class Builder {
+        private UpdateWrapper mUpdateWrapper = new UpdateWrapper();
+
+        public Builder(Context context) {
+            mUpdateWrapper.mContext = context;
+        }
+
+        public Builder setUrl(String url) {
+            mUpdateWrapper.url = url;
+            return this;
+        }
+
+        public Builder setTime(long time) {
+            mUpdateWrapper.time = time;
+            return this;
+        }
+
+        public UpdateWrapper build() {
+            return mUpdateWrapper;
+        }
     }
 }
