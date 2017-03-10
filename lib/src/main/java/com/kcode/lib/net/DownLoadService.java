@@ -20,6 +20,7 @@ import java.io.File;
 
 public class DownLoadService extends Service {
 
+    private static final int NOTIFICATION_ID = 0;
     private int notificationIcon;
     private String filePath;
     private boolean isBackground = false;
@@ -41,6 +42,9 @@ public class DownLoadService extends Service {
             @Override
             public void update(long bytesRead, long contentLength, boolean done) {
 
+                if (done) {
+                    mNotificationManager.cancel(NOTIFICATION_ID);
+                }
                 if (isBackground) {
                     if (done) {
                         //下载完成，直接进行安装
@@ -120,7 +124,7 @@ public class DownLoadService extends Service {
                 .setContentText("正在下载中...")
                 .setSmallIcon(notificationIcon == 0 ? R.drawable.ic_launcher : notificationIcon);
         mBuilder.setProgress(100, current, false);
-        mNotificationManager.notify(0, mBuilder.build());
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
 
     }
 
@@ -130,7 +134,7 @@ public class DownLoadService extends Service {
             return;
         }
         mBuilder.setProgress(100, current, false);
-        mNotificationManager.notify(0, mBuilder.build());
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
 }

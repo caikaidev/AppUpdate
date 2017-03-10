@@ -1,7 +1,13 @@
 # AppUpdate
+[中文文档](https://github.com/fccaikai/AppUpdate/blob/master/README_zh.md)
+
 android app update library
 
 ### Screenshots
+
+### ![](https://ww2.sinaimg.cn/large/006tNbRwgy1fdhmyj8ttmj30qk0b4t9e.jpg)
+
+
 
 ### Usage
 
