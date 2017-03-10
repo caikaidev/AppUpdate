@@ -1,5 +1,6 @@
 package com.kcode.lib;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ public class UpdateWrapper {
     private String url;
     private int notificationIcon;
     private long time;
+    private Class<? extends Activity> cls;
 
     private UpdateWrapper() {
     }
@@ -58,11 +60,16 @@ public class UpdateWrapper {
     }
 
     private void start2Activity(Context context, VersionModel model) {
-        Intent intent = new Intent(context, UpdateActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Constant.MODEL, model);
-        intent.putExtra(Constant.NOTIFICATION_ICON, notificationIcon);
-        context.startActivity(intent);
+        try {
+            Intent intent = new Intent(context, cls == null ? UpdateActivity.class : cls);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(Constant.MODEL, model);
+            intent.putExtra(Constant.NOTIFICATION_ICON, notificationIcon);
+            context.startActivity(intent);
+        } catch (Exception e) {
+
+        }
+
     }
 
     public static class Builder {
@@ -84,6 +91,11 @@ public class UpdateWrapper {
 
         public Builder setNotificationIcon(int notificationIcon) {
             mUpdateWrapper.notificationIcon = notificationIcon;
+            return this;
+        }
+
+        public Builder setCustomsActivity(Class<? extends Activity> cls) {
+            mUpdateWrapper.cls = cls;
             return this;
         }
 

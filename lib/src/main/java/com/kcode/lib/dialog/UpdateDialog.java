@@ -3,18 +3,16 @@ package com.kcode.lib.dialog;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kcode.lib.R;
+import com.kcode.lib.base.AbstractFragment;
 import com.kcode.lib.bean.VersionModel;
 import com.kcode.lib.common.Constant;
-import com.kcode.lib.log.L;
 import com.kcode.lib.utils.PackageUtils;
 import com.kcode.lib.utils.PublicFunctionUtils;
 
@@ -22,15 +20,10 @@ import com.kcode.lib.utils.PublicFunctionUtils;
  * Created by caik on 2017/3/8.
  */
 
-public class UpdateDialog extends DialogFragment implements View.OnClickListener{
-
-    private static final String TAG = "UpdateDialog";
+public class UpdateDialog extends AbstractFragment implements View.OnClickListener {
 
     private UpdateActivity mActivity;
-    private VersionModel mModel;
-    private TextView mTvContent;
-    private Button mBtnCancel;
-    private Button mBtnUpdate;
+    protected VersionModel mModel;
 
     public static UpdateDialog newInstance(VersionModel model) {
 
@@ -41,47 +34,42 @@ public class UpdateDialog extends DialogFragment implements View.OnClickListener
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mModel = (VersionModel) getArguments().getSerializable(Constant.MODEL);
+        closeIfNoNewVersionUpdate();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mModel = (VersionModel) getArguments().getSerializable(Constant.MODEL);
-        return inflater.inflate(R.layout.fragment_update,container,false);
+        return inflater.inflate(getLayout(), container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        mTvContent = (TextView) view.findViewById(R.id.tvContent);
-        mBtnCancel = (Button) view.findViewById(R.id.btnCancel);
-        mBtnCancel.setOnClickListener(this);
-        mBtnUpdate = (Button) view.findViewById(R.id.btnUpdate);
-        mBtnUpdate.setOnClickListener(this);
-
-        showDialogIfNeedUpdate();
-        if (mModel.isMustUpdate()) {
-            mBtnCancel.setVisibility(View.GONE);
-            PublicFunctionUtils.setLastCheckTime(getContext(),0);
-        }
+        setContent(view, R.id.tvContent);
     }
 
-    private void showDialogIfNeedUpdate() {
-        if (mModel.getVersionCode() > PackageUtils.getVersionCode(getContext())) {
-            L.d(TAG,"有版本更新");
-            StringBuilder sb = new StringBuilder();
-            sb.append("版本号：")
-                    .append(mModel.getVersionName())
-                    .append("\n")
-                    .append("\n")
-                    .append("更新内容：")
-                    .append("\n")
-                    .append(mModel.getContent().replaceAll("#","\\\n"));
-
-            mTvContent.setText(sb.toString());
-        }else {
+    private void closeIfNoNewVersionUpdate() {
+        if (mModel.getVersionCode() <= PackageUtils.getVersionCode(getContext())) {
             isLatest();
             getActivity().finish();
         }
+    }
+
+    private String getContent() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("版本号：")
+                .append(mModel.getVersionName())
+                .append("\n")
+                .append("\n")
+                .append("更新内容：")
+                .append("\n")
+                .append(mModel.getContent().replaceAll("#", "\\\n"));
+        return sb.toString();
     }
 
     private void isLatest() {
@@ -93,16 +81,16 @@ public class UpdateDialog extends DialogFragment implements View.OnClickListener
         int id = view.getId();
         if (id == R.id.btnCancel) {
             onCancel();
-        }else if(id == R.id.btnUpdate){
+        } else if (id == R.id.btnUpdate) {
             onUpdate();
         }
     }
 
-    private void onCancel() {
+    protected void onCancel() {
         getActivity().finish();
     }
 
-    private void onUpdate(){
+    protected void onUpdate() {
         mActivity.showDownLoadProgress();
     }
 
@@ -112,5 +100,50 @@ public class UpdateDialog extends DialogFragment implements View.OnClickListener
         if (activity instanceof UpdateActivity) {
             mActivity = (UpdateActivity) activity;
         }
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_update;
+    }
+
+    @Override
+    protected void setContent(View view,int contentId) {
+        TextView tvContext = (TextView) view.findViewById(contentId);
+        tvContext.setText(getContent());
+    }
+
+    protected void initIfMustUpdate(View view,int id) {
+        if (mModel.isMustUpdate()) {
+            view.findViewById(id).setVisibility(View.GONE);
+            PublicFunctionUtils.setLastCheckTime(getContext(), 0);
+        }
+    }
+
+    @Override
+    protected void initView(View view) {
+        bindUpdateListener(view,R.id.btnUpdate);
+        bindCancelListener(view, R.id.btnCancel);
+        initIfMustUpdate(view,R.id.btnCancel);
+    }
+
+    @Override
+    protected void bindUpdateListener(View view,int updateId) {
+        view.findViewById(updateId).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onUpdate();
+            }
+        });
+    }
+
+    @Override
+    protected void bindCancelListener(View view, int cancelId) {
+        view.findViewById(cancelId).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCancel();
+            }
+        });
     }
 }

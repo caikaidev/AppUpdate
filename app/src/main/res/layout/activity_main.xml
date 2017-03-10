@@ -22,4 +22,10 @@
         android:onClick="check"
         android:text="立刻检查"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="checkCustoms"
+        android:text="立刻检查(自定义界面)"/>
+
 </LinearLayout>
