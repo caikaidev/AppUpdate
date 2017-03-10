@@ -5,7 +5,9 @@ android app update library
 
 ### Screenshots
 
-### ![](https://ww2.sinaimg.cn/large/006tNbRwgy1fdhmyj8ttmj30qk0b4t9e.jpg)
+### ![](https://ww3.sinaimg.cn/large/006tNbRwgy1fdhug16dnhj30km0b4glu.jpg)
+
+![](https://ww4.sinaimg.cn/large/006tNbRwgy1fdhuhh2vzej30ea0b474b.jpg)
 
 
 
@@ -30,7 +32,7 @@ android app update library
 
    ```groovy
    dependencies {
-            compile 'com.github.fccaikai:AppUpdate:1.0.1'
+            compile 'com.github.fccaikai:AppUpdate:2.0.0'
     }
    ```
 
@@ -44,7 +46,9 @@ UpdateWrapper updateWrapper = new UpdateWrapper.Builder(getApplicationContext())
     	                //set notification icon
     	                .setNotificationIcon(R.mipmap.ic_launcher_round)
     	                //set update file url
-    	                .setUrl("you update json file url").build();
+    	                .setUrl("you update json file url").build()
+  						//set customs activity
+  						.setCustomsActivity(cls);
 updateWrapper.start();
 ```
 
@@ -59,6 +63,76 @@ updateWrapper.start();
   "url":"apk download url"
 }
 ```
+
+#### Custom
+
++ create  custome Activity
+
+  create an activity ```extents UpdateActivity   ``` ,and Override ```protected Fragment getUpdateDialogFragment()```.like :
+
+  ```java
+  public class CustomsUpdateActivity extends UpdateActivity {
+      @Override
+      protected Fragment getUpdateDialogFragment() {
+          return CustomsUpdateFragment.newInstance(mModel);
+      }
+  }
+  ```
+
++ create custom FragmentDialog
+
+  create a FragmentDialog ``` extends UpdateDialog```.like:
+
+  ```java
+
+  public class CustomsUpdateFragment extends UpdateDialog {
+
+      public static CustomsUpdateFragment newInstance(VersionModel model) {
+
+          Bundle args = new Bundle();
+          args.putSerializable(Constant.MODEL, model);
+          CustomsUpdateFragment fragment = new CustomsUpdateFragment();
+          fragment.setArguments(args);
+          return fragment;
+      }
+
+      @Override
+      protected int getLayout() {
+          return R.layout.fragment_update_dialog;
+      }
+
+      @Override
+      protected void setContent(View view, int contentId) {
+          super.setContent(view, R.id.content);
+      }
+
+      @Override
+      protected void bindUpdateListener(View view, int updateId) {
+          super.bindUpdateListener(view, R.id.update);
+      }
+
+      @Override
+      protected void bindCancelListener(View view, int cancelId) {
+          super.bindCancelListener(view, R.id.cancel);
+      }
+
+      @Override
+      protected void initIfMustUpdate(View view, int id) {
+          super.initIfMustUpdate(view, R.id.cancel);
+      }
+  }
+  ```
+
++ set Custom Activity
+
+  ```java
+  UpdateWrapper.Builder builder = ...;
+  builder.setCustomsActivity(CustomsUpdateActivity.class);
+  ...
+  builder.build().start();
+  ```
+
+  see the [demo](https://github.com/fccaikai/AppUpdate/blob/master/app/src/main/java/com/kcode/appupdate/MainActivity.java) .
 
 ### Library
 

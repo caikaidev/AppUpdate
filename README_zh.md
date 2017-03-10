@@ -4,7 +4,11 @@ Android 检查更新库
 
 ### 屏幕截图
 
-### ![](https://ww2.sinaimg.cn/large/006tNbRwgy1fdhmyj8ttmj30qk0b4t9e.jpg)
+![](https://ww3.sinaimg.cn/large/006tNbRwgy1fdhug16dnhj30km0b4glu.jpg) 
+
+
+
+![](https://ww4.sinaimg.cn/large/006tNbRwgy1fdhuhh2vzej30ea0b474b.jpg)
 
 
 
@@ -29,7 +33,7 @@ Android 检查更新库
 
   ```groovy
   dependencies {
-           compile 'com.github.fccaikai:AppUpdate:1.0.1'
+           compile 'com.github.fccaikai:AppUpdate:2.0.0'
    }
   ```
 
@@ -57,7 +61,70 @@ updateWrapper.start();
   "url":"apk download url"
 }
 ```
+#### 自定义UI
++ 自定义Activity
+   创建一个Activity 继承自```UpdateActivity```,并重写```protected Fragment getUpdateDialogFragment()```方法，比如：
 
+ ```
+ public class CustomsUpdateActivity extends UpdateActivity {
+     @Override
+     protected Fragment getUpdateDialogFragment() {
+         return CustomsUpdateFragment.newInstance(mModel);
+     }
+ }
+ ```
++ 自定义FragmentDialog
+
+ 创建一个FragmentDialog，继承自```UpdateDialog```,代码如下：
+
+ ```
+ public class CustomsUpdateFragment extends UpdateDialog {
+
+   public static CustomsUpdateFragment newInstance(VersionModel model) {
+
+       Bundle args = new Bundle();
+       args.putSerializable(Constant.MODEL, model);
+       CustomsUpdateFragment fragment = new CustomsUpdateFragment();
+       fragment.setArguments(args);
+       return fragment;
+     }
+
+     @Override
+     protected int getLayout() {
+         return R.layout.fragment_update_dialog;
+     }
+
+     @Override
+     protected void setContent(View view, int contentId) {
+         super.setContent(view, R.id.content);
+     }
+
+     @Override
+     protected void bindUpdateListener(View view, int updateId) {
+         super.bindUpdateListener(view, R.id.update);
+     }
+
+     @Override
+     protected void bindCancelListener(View view, int cancelId) {
+         super.bindCancelListener(view, R.id.cancel);
+     }
+
+     @Override
+     protected void initIfMustUpdate(View view, int id) {
+         super.initIfMustUpdate(view, R.id.cancel);
+     }
+ }
+ ```
+
++ 配置
+
+ ```
+ UpdateWrapper.Builder builder = ...;
+ builder.setCustomsActivity(CustomsUpdateActivity.class);
+ ...
+ builder.build().start();
+ ```
+ 具体使用请查看[demo](https://github.com/fccaikai/AppUpdate/blob/master/app/src/main/java/com/kcode/appupdate/MainActivity.java)
 ### 依赖的库
 
 - v7-support   
