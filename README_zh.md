@@ -33,7 +33,7 @@ Android 检查更新库
 
   ```groovy
   dependencies {
-           compile 'com.github.fccaikai:AppUpdate:2.0.0'
+           compile 'com.github.fccaikai:AppUpdate:2.0.1'
    }
   ```
 
@@ -73,6 +73,21 @@ updateWrapper.start();
      }
  }
  ```
++ 设置主题
+
+  Activity需要设置为Dialog主题，在```Androidmanifest.xml```中注册Activity中设置主题
+
+  ```xml
+  <activity 
+            android:name=".CustomsUpdateActivity"
+            android:theme="@style/UpdateDialog">
+  </activity>
+  ```
+
+  ​
+
+  ​
+
 + 自定义FragmentDialog
 
  创建一个FragmentDialog，继承自```UpdateDialog```,代码如下：

@@ -32,7 +32,7 @@ android app update library
 
    ```groovy
    dependencies {
-            compile 'com.github.fccaikai:AppUpdate:2.0.0'
+            compile 'com.github.fccaikai:AppUpdate:2.0.1'
     }
    ```
 
@@ -78,6 +78,23 @@ updateWrapper.start();
       }
   }
   ```
+
++ set theme
+
+  set Activity theme as Dialog to,in ```Androidmanifest.xml```
+
+  ```xml
+  android:theme="@style/UpdateDialog"
+  ```
+
+  ```xml
+  <activity 
+            android:name=".CustomsUpdateActivity"
+            android:theme="@style/UpdateDialog">
+  </activity>
+  ```
+
+  ​
 
 + create custom FragmentDialog
 
