@@ -40,4 +40,11 @@ public class UpdateActivity extends AppCompatActivity{
                 .commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mModel.isMustUpdate()) {
+            return;
+        }
+        super.onBackPressed();
+    }
 }

@@ -13,8 +13,10 @@ import android.widget.Toast;
 
 import com.kcode.lib.R;
 import com.kcode.lib.bean.VersionModel;
+import com.kcode.lib.common.Constant;
 import com.kcode.lib.log.L;
 import com.kcode.lib.utils.PackageUtils;
+import com.kcode.lib.utils.PublicFunctionUtils;
 
 /**
  * Created by caik on 2017/3/8.
@@ -33,7 +35,7 @@ public class UpdateDialog extends DialogFragment implements View.OnClickListener
     public static UpdateDialog newInstance(VersionModel model) {
 
         Bundle args = new Bundle();
-        args.putSerializable("model", model);
+        args.putSerializable(Constant.MODEL, model);
         UpdateDialog fragment = new UpdateDialog();
         fragment.setArguments(args);
         return fragment;
@@ -42,7 +44,7 @@ public class UpdateDialog extends DialogFragment implements View.OnClickListener
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mModel = (VersionModel) getArguments().getSerializable("model");
+        mModel = (VersionModel) getArguments().getSerializable(Constant.MODEL);
         return inflater.inflate(R.layout.fragment_update,container,false);
     }
 
@@ -57,12 +59,16 @@ public class UpdateDialog extends DialogFragment implements View.OnClickListener
         mBtnUpdate.setOnClickListener(this);
 
         showDialogIfNeedUpdate();
+        if (mModel.isMustUpdate()) {
+            mBtnCancel.setVisibility(View.GONE);
+            PublicFunctionUtils.setLastCheckTime(getContext(),0);
+        }
     }
 
     private void showDialogIfNeedUpdate() {
         if (mModel.getVersionCode() > PackageUtils.getVersionCode(getContext())) {
             L.d(TAG,"有版本更新");
-            mTvContent.setText(mModel.getContent());
+            mTvContent.setText(mModel.getContent().replaceAll("#","\\\n"));
         }else {
             isLatest();
             getActivity().finish();

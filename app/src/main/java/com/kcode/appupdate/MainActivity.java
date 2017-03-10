@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         UpdateWrapper updateWrapper = new UpdateWrapper.Builder(getApplicationContext())
                 .setTime(time)
                 .setNotificationIcon(R.mipmap.ic_launcher_round)
-                .setUrl("http://114.55.236.165/logistical/app/update.json").build();
+                .setUrl("http://45.78.52.169/app/update.json").build();
 
         updateWrapper.start();
     }

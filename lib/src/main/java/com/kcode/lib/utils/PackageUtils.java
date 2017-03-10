@@ -16,8 +16,7 @@ public class PackageUtils {
             if (info == null) {
                 return 0;
             }
-//            return info.versionCode;
-            return 0;
+            return info.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             return 0;
         }

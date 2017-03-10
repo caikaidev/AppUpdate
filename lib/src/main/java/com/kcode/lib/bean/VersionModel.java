@@ -73,7 +73,7 @@ public class VersionModel implements Serializable{
             versionCode = object.getInt("versionCode");
             versionName = object.getString("versionName");
             content = object.getString("content");
-            url = object.getString("baseUrl") + object.getString("fileUrl");
+            url = object.getString("url");
             mustUpdate = object.getBoolean("mustUpdate");
 
             return this;
