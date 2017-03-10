@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.kcode.lib.bean.VersionModel;
+import com.kcode.lib.common.Constant;
 import com.kcode.lib.dialog.UpdateActivity;
+import com.kcode.lib.log.L;
 import com.kcode.lib.net.CheckUpdateTask;
 import com.kcode.lib.utils.PublicFunctionUtils;
 
@@ -15,8 +17,11 @@ import com.kcode.lib.utils.PublicFunctionUtils;
 
 public class UpdateWrapper {
 
+    private static final String TAG = "UpdateWrapper";
+
     private Context mContext;
     private String url;
+    private int notificationIcon;
     private long time;
 
     private UpdateWrapper() {
@@ -25,9 +30,9 @@ public class UpdateWrapper {
     public void start() {
 
         if (checkUpdateTime(time)) {
+            L.d(TAG,"距离上次更新时间太近");
             return;
         }
-
         new CheckUpdateTask(url, new CheckUpdateTask.Callback() {
             @Override
             public void callBack(VersionModel model) {
@@ -35,6 +40,8 @@ public class UpdateWrapper {
                     Toast.makeText(mContext, "最新版本", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //记录本次更新时间
+                PublicFunctionUtils.setLastCheckTime(mContext, System.currentTimeMillis());
 
                 start2Activity(mContext, model);
             }
@@ -53,7 +60,8 @@ public class UpdateWrapper {
     private void start2Activity(Context context, VersionModel model) {
         Intent intent = new Intent(context, UpdateActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("model", model);
+        intent.putExtra(Constant.MODEL, model);
+        intent.putExtra(Constant.NOTIFICATION_ICON, notificationIcon);
         context.startActivity(intent);
     }
 
@@ -71,6 +79,11 @@ public class UpdateWrapper {
 
         public Builder setTime(long time) {
             mUpdateWrapper.time = time;
+            return this;
+        }
+
+        public Builder setNotificationIcon(int notificationIcon) {
+            mUpdateWrapper.notificationIcon = notificationIcon;
             return this;
         }
 

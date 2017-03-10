@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kcode.lib.R;
+import com.kcode.lib.common.Constant;
 import com.kcode.lib.log.L;
 import com.kcode.lib.net.DownLoadService;
 import com.kcode.lib.net.DownLoadTask;
@@ -36,6 +37,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private static final String TAG = "DownLoadDialog";
     private static final String TITLE_FORMAT = "正在下载（%s/%s）";
     private String mDownloadUrl;
+    private int notificationIcon;
     private int currentProgress;
     private Button mBtnCancel;
     private Button mBtnBackground;
@@ -43,10 +45,11 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private ProgressBar mProgressBar;
     private DownLoadService mDownLoadService;
 
-    public static DownLoadDialog newInstance(String downLoadUrl) {
+    public static DownLoadDialog newInstance(String downLoadUrl,int notificationIcon) {
 
         Bundle args = new Bundle();
-        args.putString("url", downLoadUrl);
+        args.putString(Constant.URL, downLoadUrl);
+        args.putInt(Constant.NOTIFICATION_ICON,notificationIcon);
         DownLoadDialog fragment = new DownLoadDialog();
         fragment.setArguments(args);
         return fragment;
@@ -56,7 +59,8 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_download, container, false);
-        mDownloadUrl = getArguments().getString("url");
+        mDownloadUrl = getArguments().getString(Constant.URL);
+        notificationIcon = getArguments().getInt(Constant.NOTIFICATION_ICON);
         return view;
     }
 
@@ -73,7 +77,6 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         mProgressBar.setMax(100);
 
         Intent intent = new Intent(getContext(), DownLoadService.class);
-        intent.putExtra("url", mDownloadUrl);
         getActivity().bindService(intent,mConnection , Context.BIND_AUTO_CREATE);
 
     }
@@ -85,6 +88,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
             mDownLoadService = binder.getService();
             mDownLoadService.registerProgressListener(mProgressListener);
             mDownLoadService.startDownLoad(mDownloadUrl);
+            mDownLoadService.setNotificationIcon(notificationIcon);
         }
 
         @Override
@@ -141,9 +145,14 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unbindService(mConnection);
+    }
+
     private void doCancel() {
         mDownLoadService.cancel();
-        getActivity().unbindService(mConnection);
         getActivity().finish();
         Toast.makeText(getContext(), "已取消更新", Toast.LENGTH_SHORT).show();
     }

@@ -20,6 +20,7 @@ import java.io.File;
 
 public class DownLoadService extends Service {
 
+    private int notificationIcon;
     private String filePath;
     private boolean isBackground = false;
     private DownLoadTask mDownLoadTask;
@@ -99,6 +100,10 @@ public class DownLoadService extends Service {
         mDownLoadTask = null;
     }
 
+    public void setNotificationIcon(int notificationIcon) {
+        this.notificationIcon = notificationIcon;
+    }
+
     public class DownLoadBinder extends Binder {
         public DownLoadService getService() {
             return DownLoadService.this;
@@ -113,13 +118,17 @@ public class DownLoadService extends Service {
         mBuilder = new NotificationCompat.Builder(this);
         mBuilder.setContentTitle("文件下载")
                 .setContentText("正在下载中...")
-                .setSmallIcon(R.drawable.ic_launcher);
+                .setSmallIcon(notificationIcon == 0 ? R.drawable.ic_launcher : notificationIcon);
         mBuilder.setProgress(100, current, false);
         mNotificationManager.notify(0, mBuilder.build());
 
     }
 
     private void notification(int current) {
+        if (mBuilder == null) {
+            showNotification(current);
+            return;
+        }
         mBuilder.setProgress(100, current, false);
         mNotificationManager.notify(0, mBuilder.build());
     }
