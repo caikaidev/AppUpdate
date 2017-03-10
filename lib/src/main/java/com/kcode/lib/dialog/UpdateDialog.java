@@ -54,7 +54,7 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     }
 
     private void closeIfNoNewVersionUpdate() {
-        if (mModel.getVersionCode() <= PackageUtils.getVersionCode(getContext())) {
+        if (mModel.getVersionCode() <= PackageUtils.getVersionCode(getActivity().getApplicationContext())) {
             isLatest();
             getActivity().finish();
         }
@@ -73,7 +73,7 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     }
 
     private void isLatest() {
-        Toast.makeText(getContext(), "当前已是最新版本", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "当前已是最新版本", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -116,7 +116,7 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     protected void initIfMustUpdate(View view,int id) {
         if (mModel.isMustUpdate()) {
             view.findViewById(id).setVisibility(View.GONE);
-            PublicFunctionUtils.setLastCheckTime(getContext(), 0);
+            PublicFunctionUtils.setLastCheckTime(getActivity().getApplicationContext(), 0);
         }
     }
 

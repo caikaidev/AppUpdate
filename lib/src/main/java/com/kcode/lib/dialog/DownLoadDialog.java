@@ -76,7 +76,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         mProgressBar.setMax(100);
 
-        Intent intent = new Intent(getContext(), DownLoadService.class);
+        Intent intent = new Intent(getActivity(), DownLoadService.class);
         getActivity().bindService(intent,mConnection , Context.BIND_AUTO_CREATE);
 
     }
@@ -118,7 +118,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     };
 
     private String getFilePath() {
-        String filePath = getContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        String filePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
         String fileName;
         if (mDownloadUrl.endsWith(".apk")) {
             int index = mDownloadUrl.lastIndexOf("/");
@@ -154,14 +154,14 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private void doCancel() {
         mDownLoadService.cancel();
         getActivity().finish();
-        Toast.makeText(getContext(), "已取消更新", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity().getApplicationContext(), "已取消更新", Toast.LENGTH_SHORT).show();
     }
 
     private void doBackground() {
         mDownLoadService.setBackground(true);
         mDownLoadService.showNotification(currentProgress);
         getActivity().finish();
-        Toast.makeText(getContext(), "正在后台进行更新", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity().getApplicationContext(), "正在后台进行更新", Toast.LENGTH_SHORT).show();
     }
 
     private final static int LOADING = 1000;
