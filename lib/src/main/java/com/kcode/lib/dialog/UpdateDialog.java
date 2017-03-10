@@ -68,7 +68,16 @@ public class UpdateDialog extends DialogFragment implements View.OnClickListener
     private void showDialogIfNeedUpdate() {
         if (mModel.getVersionCode() > PackageUtils.getVersionCode(getContext())) {
             L.d(TAG,"有版本更新");
-            mTvContent.setText(mModel.getContent().replaceAll("#","\\\n"));
+            StringBuilder sb = new StringBuilder();
+            sb.append("版本号：")
+                    .append(mModel.getVersionName())
+                    .append("\n")
+                    .append("\n")
+                    .append("更新内容：")
+                    .append("\n")
+                    .append(mModel.getContent().replaceAll("#","\\\n"));
+
+            mTvContent.setText(sb.toString());
         }else {
             isLatest();
             getActivity().finish();
