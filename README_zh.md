@@ -29,7 +29,7 @@ Android 检查更新库
 
   ```groovy
   dependencies {
-           compile 'com.github.fccaikai:AppUpdate:1.0.0'
+           compile 'com.github.fccaikai:AppUpdate:1.0.1'
    }
   ```
 
@@ -68,7 +68,7 @@ updateWrapper.start();
 
   ```compile 'com.squareup.okhttp3:okhttp:3.6.0'```
 
-  如果你不想使用这两个库，可以使用```exclude``排除
+  如果你不想使用这两个库，可以使用```exclude```排除
 
 
 

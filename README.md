@@ -30,7 +30,7 @@ android app update library
 
    ```groovy
    dependencies {
-            compile 'com.github.fccaikai:AppUpdate:1.0.0'
+            compile 'com.github.fccaikai:AppUpdate:1.0.1'
     }
    ```
 
