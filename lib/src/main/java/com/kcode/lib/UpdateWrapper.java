@@ -1,8 +1,8 @@
 package com.kcode.lib;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
 import com.kcode.lib.bean.VersionModel;
@@ -24,7 +24,7 @@ public class UpdateWrapper {
     private String url;
     private int notificationIcon;
     private long time;
-    private Class<? extends Activity> cls;
+    private Class<? extends FragmentActivity> cls;
 
     private UpdateWrapper() {
     }
@@ -94,7 +94,7 @@ public class UpdateWrapper {
             return this;
         }
 
-        public Builder setCustomsActivity(Class<? extends Activity> cls) {
+        public Builder setCustomsActivity(Class<? extends FragmentActivity> cls) {
             mUpdateWrapper.cls = cls;
             return this;
         }
