@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -117,24 +116,6 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         }
     };
 
-    private String getFilePath() {
-        String filePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-        String fileName;
-        if (mDownloadUrl.endsWith(".apk")) {
-            int index = mDownloadUrl.lastIndexOf("/");
-            if (index != -1) {
-                fileName = mDownloadUrl.substring(index);
-            } else {
-                fileName = getActivity().getPackageName() + ".apk";
-            }
-        } else {
-            fileName = getActivity().getPackageName() + ".apk";
-        }
-
-        File file = new File(filePath, fileName);
-        return file.getAbsolutePath();
-    }
-
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -180,7 +161,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
                             FileUtils.setFileSize(contentLength)));
                     break;
                 case DONE:
-                    getActivity().startActivity(FileUtils.openApkFile(new File(getFilePath())));
+                    getActivity().startActivity(FileUtils.openApkFile(getActivity(),new File(FileUtils.getApkFilePath(getActivity(),mDownloadUrl))));
                     getActivity().finish();
                     Toast.makeText(getActivity(), "下载完成", Toast.LENGTH_SHORT).show();
                     break;

@@ -4,7 +4,6 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -37,7 +36,7 @@ public class DownLoadService extends Service {
     }
 
     public void startDownLoad(String url) {
-        filePath = getFilePath(url);
+        filePath = FileUtils.getApkFilePath(getApplicationContext(),url);
         mDownLoadTask = new DownLoadTask(filePath, url, new DownLoadTask.ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength, boolean done) {
@@ -48,7 +47,7 @@ public class DownLoadService extends Service {
                 if (isBackground) {
                     if (done) {
                         //下载完成，直接进行安装
-                        startActivity(FileUtils.openApkFile(new File(filePath)));
+                        startActivity(FileUtils.openApkFile(getApplicationContext(),new File(filePath)));
                     } else {
                         int currentProgress = (int) (bytesRead * 100 / contentLength);
                         if (currentProgress < 1) {
@@ -70,24 +69,6 @@ public class DownLoadService extends Service {
 
     public void setBackground(boolean background) {
         isBackground = background;
-    }
-
-    private String getFilePath(String url) {
-        String filePath = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-        String fileName;
-        if (url.endsWith(".apk")) {
-            int index = url.lastIndexOf("/");
-            if (index != -1) {
-                fileName = url.substring(index);
-            } else {
-                fileName = getPackageName() + ".apk";
-            }
-        } else {
-            fileName = getPackageName() + ".apk";
-        }
-
-        File file = new File(filePath, fileName);
-        return file.getAbsolutePath();
     }
 
     private final DownLoadBinder mDownLoadBinder = new DownLoadBinder();
