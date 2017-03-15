@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -157,8 +158,8 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
                     long bytesRead = bundle.getLong("bytesRead");
                     long contentLength = bundle.getLong("contentLength");
                     mTvTitle.setText(String.format(TITLE_FORMAT,
-                            FileUtils.setFileSize(bytesRead),
-                            FileUtils.setFileSize(contentLength)));
+                            Formatter.formatFileSize(getActivity().getApplication(),bytesRead),
+                            Formatter.formatFileSize(getActivity().getApplication(),contentLength)));
                     break;
                 case DONE:
                     getActivity().startActivity(FileUtils.openApkFile(getActivity(),new File(FileUtils.getApkFilePath(getActivity(),mDownloadUrl))));
