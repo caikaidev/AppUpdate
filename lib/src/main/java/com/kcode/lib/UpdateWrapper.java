@@ -10,6 +10,7 @@ import com.kcode.lib.common.Constant;
 import com.kcode.lib.dialog.UpdateActivity;
 import com.kcode.lib.log.L;
 import com.kcode.lib.net.CheckUpdateTask;
+import com.kcode.lib.utils.PackageUtils;
 import com.kcode.lib.utils.PublicFunctionUtils;
 
 /**
@@ -22,6 +23,7 @@ public class UpdateWrapper {
 
     private Context mContext;
     private String url;
+    private CheckUpdateTask.Callback mCallback;
     private int notificationIcon;
     private long time;
     private Class<? extends FragmentActivity> cls;
@@ -44,10 +46,20 @@ public class UpdateWrapper {
                 }
                 //记录本次更新时间
                 PublicFunctionUtils.setLastCheckTime(mContext, System.currentTimeMillis());
-
+                callBackIfHasNewVersion(model);
                 start2Activity(mContext, model);
             }
         }).start();
+    }
+
+    private void callBackIfHasNewVersion(VersionModel model) {
+        if (model == null) {
+            return;
+        }
+        if (PackageUtils.getVersionCode(mContext) < model.getVersionCode()
+                && mCallback != null) {
+            mCallback.callBack(model);
+        }
     }
 
     private boolean checkUpdateTime(long time) {
@@ -96,6 +108,11 @@ public class UpdateWrapper {
 
         public Builder setCustomsActivity(Class<? extends FragmentActivity> cls) {
             mUpdateWrapper.cls = cls;
+            return this;
+        }
+
+        public Builder setCallback(CheckUpdateTask.Callback callback) {
+            mUpdateWrapper.mCallback = callback;
             return this;
         }
 

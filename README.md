@@ -32,7 +32,7 @@ android app update library
 
    ```groovy
    dependencies {
-            compile 'com.github.fccaikai:AppUpdate:2.0.1'
+            compile 'com.github.fccaikai:AppUpdate:2.0.3'
     }
    ```
 
@@ -46,9 +46,18 @@ UpdateWrapper updateWrapper = new UpdateWrapper.Builder(getApplicationContext())
     	                //set notification icon
     	                .setNotificationIcon(R.mipmap.ic_launcher_round)
     	                //set update file url
-    	                .setUrl("you update json file url").build()
+    	                .setUrl("you update json file url")
   						//set customs activity
-  						.setCustomsActivity(cls);
+  						.setCustomsActivity(cls)
+  						//add callback ,return new version info
+						.setCallback(new CheckUpdateTask.Callback() {
+                                    @Override
+                                    public void callBack(VersionModel model) {
+                                        Log.d(TAG,"new version :" + 																	model.getVersionName());
+                                    }
+                                })
+  						.build();
+
 updateWrapper.start();
 ```
 
@@ -58,7 +67,7 @@ updateWrapper.start();
 {
   "versionCode":1,
   "versionName":"1.0.0",
-  "content":"1.新增抢单功能#2.性能优化",//use # to wrap
+  "content":"1.add something#2.add something",//use # to wrap
   "mustUpdate":true,	//must update ,true or false
   "url":"apk download url"
 }

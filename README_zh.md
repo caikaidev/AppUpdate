@@ -33,7 +33,7 @@ Android 检查更新库
 
   ```groovy
   dependencies {
-           compile 'com.github.fccaikai:AppUpdate:2.0.1'
+           compile 'com.github.fccaikai:AppUpdate:2.0.3'
    }
   ```
 
@@ -46,7 +46,15 @@ UpdateWrapper updateWrapper = new UpdateWrapper.Builder(getApplicationContext())
     	                //set notification icon
     	                .setNotificationIcon(R.mipmap.ic_launcher_round)
     	                //set update file url
-    	                .setUrl("you update json file url").build();
+    	                .setUrl("you update json file url")
+						//add callback ,return new version info
+						.setCallback(new CheckUpdateTask.Callback() {
+                                    @Override
+                                    public void callBack(VersionModel model) {
+                                        Log.d(TAG,"new version :" + 																		model.getVersionName());
+                                    }
+                         })
+						 .build();
 updateWrapper.start();
 ```
 
