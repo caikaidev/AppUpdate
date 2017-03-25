@@ -38,7 +38,7 @@ public class CheckUpdateTask extends Thread {
         mOkHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                mCallBack.callBack(null);
+                mCallBack.isLatestVersion();
             }
 
             @Override
@@ -56,5 +56,7 @@ public class CheckUpdateTask extends Thread {
 
     public interface Callback {
         void callBack(VersionModel model);
+
+        void isLatestVersion();
     }
 }

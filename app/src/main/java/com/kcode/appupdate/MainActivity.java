@@ -54,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
                                     public void callBack(VersionModel model) {
                                         Log.d(TAG,"new version :" + model.getVersionName());
                                     }
+
+                                    @Override
+                                    public void isLatestVersion() {
+
+                                    }
                                 });
 
                         if (cls != null) {

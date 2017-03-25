@@ -4,7 +4,7 @@ Android 检查更新库
 
 ### 屏幕截图
 
-![](https://ww3.sinaimg.cn/large/006tNbRwgy1fdhug16dnhj30km0b4glu.jpg) 
+![](https://ww3.sinaimg.cn/large/006tNbRwgy1fdhug16dnhj30km0b4glu.jpg)
 
 
 
@@ -33,7 +33,7 @@ Android 检查更新库
 
   ```groovy
   dependencies {
-           compile 'com.github.fccaikai:AppUpdate:2.0.3'
+           compile 'com.github.fccaikai:AppUpdate:2.0.4'
    }
   ```
 
@@ -86,7 +86,7 @@ updateWrapper.start();
   Activity需要设置为Dialog主题，在```Androidmanifest.xml```中注册Activity中设置主题
 
   ```xml
-  <activity 
+  <activity
             android:name=".CustomsUpdateActivity"
             android:theme="@style/UpdateDialog">
   </activity>
@@ -150,9 +150,9 @@ updateWrapper.start();
  具体使用请查看[demo](https://github.com/fccaikai/AppUpdate/blob/master/app/src/main/java/com/kcode/appupdate/MainActivity.java)
 ### 依赖的库
 
-- v7-support   
+- v7-support
 
-   ```compile 'com.android.support:appcompat-v7:25.2.0'```   
+   ```compile 'com.android.support:appcompat-v7:25.2.0'```
 
 - okhttp
 

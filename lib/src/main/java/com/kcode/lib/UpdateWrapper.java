@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.kcode.lib.bean.VersionModel;
 import com.kcode.lib.common.Constant;
 import com.kcode.lib.dialog.UpdateActivity;
 import com.kcode.lib.log.L;
 import com.kcode.lib.net.CheckUpdateTask;
-import com.kcode.lib.utils.PackageUtils;
 import com.kcode.lib.utils.PublicFunctionUtils;
 
 /**
@@ -45,26 +43,17 @@ public class UpdateWrapper {
         new CheckUpdateTask(url, new CheckUpdateTask.Callback() {
             @Override
             public void callBack(VersionModel model) {
-                if (model == null) {
-                    Toast.makeText(mContext, "最新版本", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 //记录本次更新时间
                 PublicFunctionUtils.setLastCheckTime(mContext, System.currentTimeMillis());
-                callBackIfHasNewVersion(model);
+                mCallback.callBack(model);
                 start2Activity(mContext, model);
             }
-        }).start();
-    }
 
-    private void callBackIfHasNewVersion(VersionModel model) {
-        if (model == null) {
-            return;
-        }
-        if (PackageUtils.getVersionCode(mContext) < model.getVersionCode()
-                && mCallback != null) {
-            mCallback.callBack(model);
-        }
+            @Override
+            public void isLatestVersion() {
+                mCallback.isLatestVersion();
+            }
+        }).start();
     }
 
     private boolean checkUpdateTime(long time) {
