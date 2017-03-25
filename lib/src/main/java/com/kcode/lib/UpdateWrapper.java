@@ -64,7 +64,10 @@ public class UpdateWrapper {
             }
             //记录本次更新时间
             PublicFunctionUtils.setLastCheckTime(mContext, System.currentTimeMillis());
-            mCallback.callBack(model);
+            if (mCallback != null) {
+                mCallback.callBack(model);
+            }
+
             start2Activity(mContext, model);
         }
     };
