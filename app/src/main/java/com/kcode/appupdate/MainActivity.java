@@ -4,11 +4,11 @@ import android.Manifest;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.kcode.lib.UpdateWrapper;
 import com.kcode.lib.bean.VersionModel;
+import com.kcode.lib.log.L;
 import com.kcode.lib.net.CheckUpdateTask;
 import com.kcode.permissionslib.main.OnRequestPermissionsCallBack;
 import com.kcode.permissionslib.main.PermissionCompat;
@@ -52,12 +52,7 @@ public class MainActivity extends AppCompatActivity {
                                 .setCallback(new CheckUpdateTask.Callback() {
                                     @Override
                                     public void callBack(VersionModel model) {
-                                        Log.d(TAG,"new version :" + model.getVersionName());
-                                    }
-
-                                    @Override
-                                    public void isLatestVersion() {
-
+                                        L.d(TAG,"new version :" + model.getVersionName());
                                     }
                                 });
 
