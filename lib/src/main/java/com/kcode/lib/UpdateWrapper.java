@@ -3,6 +3,7 @@ package com.kcode.lib;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.kcode.lib.bean.VersionModel;
@@ -32,6 +33,10 @@ public class UpdateWrapper {
     }
 
     public void start() {
+
+        if (TextUtils.isEmpty(url)) {
+            throw new RuntimeException("url not be null");
+        }
 
         if (checkUpdateTime(time)) {
             L.d(TAG,"距离上次更新时间太近");
