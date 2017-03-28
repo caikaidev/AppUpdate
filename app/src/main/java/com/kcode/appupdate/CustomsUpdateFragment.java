@@ -13,10 +13,11 @@ import com.kcode.lib.dialog.UpdateDialog;
 
 public class CustomsUpdateFragment extends UpdateDialog {
 
-    public static CustomsUpdateFragment newInstance(VersionModel model) {
+    public static CustomsUpdateFragment newInstance(VersionModel model,String toastMsg) {
 
         Bundle args = new Bundle();
         args.putSerializable(Constant.MODEL, model);
+        args.putString(Constant.TOAST_MSG, toastMsg);
         CustomsUpdateFragment fragment = new CustomsUpdateFragment();
         fragment.setArguments(args);
         return fragment;

@@ -39,28 +39,32 @@ public class DownLoadService extends Service {
         filePath = FileUtils.getApkFilePath(getApplicationContext(),url);
         mDownLoadTask = new DownLoadTask(filePath, url, new DownLoadTask.ProgressListener() {
             @Override
-            public void update(long bytesRead, long contentLength, boolean done) {
-
-                if (done) {
-                    mNotificationManager.cancel(NOTIFICATION_ID);
-                }
+            public void done() {
+                mNotificationManager.cancel(NOTIFICATION_ID);
                 if (isBackground) {
-                    if (done) {
-                        //下载完成，直接进行安装
-                        startActivity(FileUtils.openApkFile(getApplicationContext(),new File(filePath)));
-                    } else {
-                        int currentProgress = (int) (bytesRead * 100 / contentLength);
-                        if (currentProgress < 1) {
-                            currentProgress = 1;
-                        }
-                        notification(currentProgress);
+                    //下载完成，直接进行安装
+                    startActivity(FileUtils.openApkFile(getApplicationContext(),new File(filePath)));
+                }else {
+                    if (mProgressListener != null) {
+                        mProgressListener.done();
                     }
+                }
+            }
+
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (isBackground) {
+                    int currentProgress = (int) (bytesRead * 100 / contentLength);
+                    if (currentProgress < 1) {
+                        currentProgress = 1;
+                    }
+                    notification(currentProgress);
                     return;
                 }
-                if (mProgressListener != null) {
-                    mProgressListener.update(bytesRead, contentLength, done);
-                }
 
+                if (mProgressListener != null) {
+                    mProgressListener.update(bytesRead, contentLength);
+                }
 
             }
         });
@@ -80,9 +84,11 @@ public class DownLoadService extends Service {
     }
 
     public void cancel() {
-        mDownLoadTask.cancel();
-        mDownLoadTask.interrupt();
-        mDownLoadTask = null;
+        if (mDownLoadBinder != null) {
+            mDownLoadTask.interrupt();
+            mDownLoadTask = null;
+        }
+
     }
 
     public void setNotificationIcon(int notificationIcon) {

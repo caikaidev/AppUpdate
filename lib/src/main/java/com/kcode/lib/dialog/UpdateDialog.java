@@ -3,11 +3,11 @@ package com.kcode.lib.dialog;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kcode.lib.R;
 import com.kcode.lib.base.AbstractFragment;
@@ -15,6 +15,7 @@ import com.kcode.lib.bean.VersionModel;
 import com.kcode.lib.common.Constant;
 import com.kcode.lib.utils.PackageUtils;
 import com.kcode.lib.utils.PublicFunctionUtils;
+import com.kcode.lib.utils.ToastUtils;
 
 /**
  * Created by caik on 2017/3/8.
@@ -24,11 +25,13 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
 
     private UpdateActivity mActivity;
     protected VersionModel mModel;
+    protected String mToastMsg;
 
-    public static UpdateDialog newInstance(VersionModel model) {
+    public static UpdateDialog newInstance(VersionModel model, String toastMsg) {
 
         Bundle args = new Bundle();
         args.putSerializable(Constant.MODEL, model);
+        args.putString(Constant.TOAST_MSG, toastMsg);
         UpdateDialog fragment = new UpdateDialog();
         fragment.setArguments(args);
         return fragment;
@@ -38,6 +41,7 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mModel = (VersionModel) getArguments().getSerializable(Constant.MODEL);
+        mToastMsg = getArguments().getString(Constant.TOAST_MSG);
         closeIfNoNewVersionUpdate();
     }
 
@@ -73,7 +77,8 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     }
 
     private void isLatest() {
-        Toast.makeText(getActivity(), "当前已是最新版本", Toast.LENGTH_SHORT).show();
+        ToastUtils.show(getActivity(),
+                TextUtils.isEmpty(mToastMsg) ? getResources().getString(R.string.update_lib_default_toast) : mToastMsg);
     }
 
     @Override
@@ -108,12 +113,12 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     }
 
     @Override
-    protected void setContent(View view,int contentId) {
+    protected void setContent(View view, int contentId) {
         TextView tvContext = (TextView) view.findViewById(contentId);
         tvContext.setText(getContent());
     }
 
-    protected void initIfMustUpdate(View view,int id) {
+    protected void initIfMustUpdate(View view, int id) {
         if (mModel.isMustUpdate()) {
             view.findViewById(id).setVisibility(View.GONE);
             PublicFunctionUtils.setLastCheckTime(getActivity().getApplicationContext(), 0);
@@ -122,13 +127,13 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
 
     @Override
     protected void initView(View view) {
-        bindUpdateListener(view,R.id.btnUpdate);
+        bindUpdateListener(view, R.id.btnUpdate);
         bindCancelListener(view, R.id.btnCancel);
-        initIfMustUpdate(view,R.id.btnCancel);
+        initIfMustUpdate(view, R.id.btnCancel);
     }
 
     @Override
-    protected void bindUpdateListener(View view,int updateId) {
+    protected void bindUpdateListener(View view, int updateId) {
         view.findViewById(updateId).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

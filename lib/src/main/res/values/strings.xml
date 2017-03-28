@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Lib</string>
+    <string name="update_lib_network_not_available">当前网络不可用</string>
+    <string name="update_lib_download_finish">下载完成</string>
+    <string name="update_lib_download_cancel">已取消更新</string>
+    <string name="update_lib_download_in_background">正在后台进行更新</string>
+    <string name="update_lib_default_toast">当前已是最新版本</string>
 </resources>

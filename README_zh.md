@@ -33,7 +33,7 @@ Android 检查更新库
 
   ```groovy
   dependencies {
-           compile 'com.github.fccaikai:AppUpdate:2.0.6'
+           compile 'com.github.fccaikai:AppUpdate:2.0.7'
    }
   ```
 
@@ -153,10 +153,6 @@ updateWrapper.start();
 - v7-support
 
    ```compile 'com.android.support:appcompat-v7:25.2.0'```
-
-- okhttp
-
-  ```compile 'com.squareup.okhttp3:okhttp:3.6.0'```
 
   如果你不想使用这两个库，可以使用```exclude```排除
 

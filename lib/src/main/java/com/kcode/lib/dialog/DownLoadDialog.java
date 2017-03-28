@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kcode.lib.R;
 import com.kcode.lib.common.Constant;
@@ -25,6 +24,7 @@ import com.kcode.lib.log.L;
 import com.kcode.lib.net.DownLoadService;
 import com.kcode.lib.net.DownLoadTask;
 import com.kcode.lib.utils.FileUtils;
+import com.kcode.lib.utils.ToastUtils;
 
 import java.io.File;
 
@@ -99,15 +99,19 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
 
     private DownLoadTask.ProgressListener mProgressListener = new DownLoadTask.ProgressListener() {
         @Override
-        public void update(final long bytesRead, final long contentLength, final boolean done) {
+        public void done() {
+            mHandler.sendEmptyMessage(DONE);
+        }
 
+        @Override
+        public void update(long bytesRead, long contentLength) {
             currentProgress = (int) (bytesRead * 100 / contentLength);
             if (currentProgress < 1) {
                 currentProgress = 1;
             }
             L.d(TAG, "" + bytesRead + "," + contentLength + ";current=" + currentProgress);
             Message message = mHandler.obtainMessage();
-            message.what = done ? DONE : LOADING;
+            message.what = LOADING;
             message.arg1 = currentProgress;
             Bundle bundle = new Bundle();
             bundle.putLong("bytesRead", bytesRead);
@@ -136,14 +140,14 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private void doCancel() {
         mDownLoadService.cancel();
         getActivity().finish();
-        Toast.makeText(getActivity().getApplicationContext(), "已取消更新", Toast.LENGTH_SHORT).show();
+        ToastUtils.show(getActivity(),R.string.update_lib_download_cancel);
     }
 
     private void doBackground() {
         mDownLoadService.setBackground(true);
         mDownLoadService.showNotification(currentProgress);
         getActivity().finish();
-        Toast.makeText(getActivity().getApplicationContext(), "正在后台进行更新", Toast.LENGTH_SHORT).show();
+        ToastUtils.show(getActivity(),R.string.update_lib_download_in_background);
     }
 
     private final static int LOADING = 1000;
@@ -164,7 +168,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
                 case DONE:
                     getActivity().startActivity(FileUtils.openApkFile(getActivity(),new File(FileUtils.getApkFilePath(getActivity(),mDownloadUrl))));
                     getActivity().finish();
-                    Toast.makeText(getActivity(), "下载完成", Toast.LENGTH_SHORT).show();
+                    ToastUtils.show(getActivity(),R.string.update_lib_download_finish);
                     break;
             }
         }

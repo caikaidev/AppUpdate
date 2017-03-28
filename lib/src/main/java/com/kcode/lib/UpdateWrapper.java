@@ -6,14 +6,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.kcode.lib.bean.VersionModel;
 import com.kcode.lib.common.Constant;
 import com.kcode.lib.dialog.UpdateActivity;
-import com.kcode.lib.log.L;
 import com.kcode.lib.net.CheckUpdateTask;
+import com.kcode.lib.utils.NetWorkUtils;
 import com.kcode.lib.utils.PublicFunctionUtils;
+import com.kcode.lib.utils.ToastUtils;
 
 /**
  * Created by caik on 2017/3/8.
@@ -36,18 +36,21 @@ public class UpdateWrapper {
 
     public void start() {
 
+        if (!NetWorkUtils.getNetworkStatus(mContext)) {
+            ToastUtils.show(mContext,R.string.update_lib_network_not_available);
+            return;
+        }
         if (TextUtils.isEmpty(mUrl)) {
             throw new RuntimeException("url not be null");
         }
 
         if (checkUpdateTime(mTime)) {
-            L.d(TAG,"距离上次更新时间太近");
             return;
         }
-        new CheckUpdateTask(mUrl, innerCallBack).start();
+        new CheckUpdateTask(mUrl, mInnerCallBack).start();
     }
 
-    private CheckUpdateTask.Callback innerCallBack = new CheckUpdateTask.Callback() {
+    private CheckUpdateTask.Callback mInnerCallBack = new CheckUpdateTask.Callback() {
         @Override
         public void callBack(VersionModel model) {
 
@@ -55,9 +58,9 @@ public class UpdateWrapper {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(mContext,
-                                TextUtils.isEmpty(mToastMsg) ? "当前已是最新版本" : mToastMsg,
-                                Toast.LENGTH_SHORT).show();
+                        ToastUtils.show(mContext,
+                                TextUtils.isEmpty(mToastMsg) ?
+                                        mContext.getResources().getString(R.string.update_lib_default_toast) : mToastMsg);
                     }
                 });
                 return;
@@ -75,7 +78,7 @@ public class UpdateWrapper {
     private boolean checkUpdateTime(long time) {
         long lastCheckUpdateTime = PublicFunctionUtils.getLastCheckTime(mContext);
         long currentTime = System.currentTimeMillis();
-        if (currentTime - lastCheckUpdateTime > time ){
+        if (currentTime - lastCheckUpdateTime > time) {
             return false;
         }
         return true;
@@ -86,6 +89,7 @@ public class UpdateWrapper {
             Intent intent = new Intent(context, mCls == null ? UpdateActivity.class : mCls);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(Constant.MODEL, model);
+            intent.putExtra(Constant.TOAST_MSG, mToastMsg);
             intent.putExtra(Constant.NOTIFICATION_ICON, mNotificationIcon);
             context.startActivity(intent);
         } catch (Exception e) {

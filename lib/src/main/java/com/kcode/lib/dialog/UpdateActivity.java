@@ -13,6 +13,7 @@ public class UpdateActivity extends AbstractUpdateActivity{
 
     private int notificationIcon;
     protected VersionModel mModel;
+    protected String mToastMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,7 @@ public class UpdateActivity extends AbstractUpdateActivity{
         setFinishOnTouchOutside(false);
         notificationIcon = getIntent().getIntExtra(Constant.NOTIFICATION_ICON, 0);
         mModel = (VersionModel) getIntent().getSerializableExtra(Constant.MODEL);
+        mToastMsg = getIntent().getStringExtra(Constant.TOAST_MSG);
         if (mModel == null) {
             finish();
             return;
@@ -51,7 +53,7 @@ public class UpdateActivity extends AbstractUpdateActivity{
 
     @Override
     protected Fragment getUpdateDialogFragment() {
-        return UpdateDialog.newInstance(mModel);
+        return UpdateDialog.newInstance(mModel,mToastMsg);
     }
 
     @Override

@@ -32,7 +32,7 @@ android app update library
 
    ```groovy
    dependencies {
-            compile 'com.github.fccaikai:AppUpdate:2.0.6'
+            compile 'com.github.fccaikai:AppUpdate:2.0.7'
     }
    ```
 
@@ -165,10 +165,6 @@ updateWrapper.start();
 + v7-support   
 
    ```compile 'com.android.support:appcompat-v7:25.2.0'```   
-
-+ okhttp
-
-   ```compile 'com.squareup.okhttp3:okhttp:3.6.0'```
 
  If you don't want to use,you can ```exclude``` it.
 
