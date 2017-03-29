@@ -5,4 +5,5 @@
     <string name="update_lib_download_cancel">已取消更新</string>
     <string name="update_lib_download_in_background">正在后台进行更新</string>
     <string name="update_lib_default_toast">当前已是最新版本</string>
+    <string name="download_title_format">正在下载（%s/%s）</string>
 </resources>

@@ -28,14 +28,9 @@ import com.kcode.lib.utils.ToastUtils;
 
 import java.io.File;
 
-/**
- * Created by caik on 2017/3/9.
- */
-
 public class DownLoadDialog extends DialogFragment implements View.OnClickListener {
 
     private static final String TAG = "DownLoadDialog";
-    private static final String TITLE_FORMAT = "正在下载（%s/%s）";
     private String mDownloadUrl;
     private int notificationIcon;
     private int currentProgress;
@@ -45,11 +40,11 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private ProgressBar mProgressBar;
     private DownLoadService mDownLoadService;
 
-    public static DownLoadDialog newInstance(String downLoadUrl,int notificationIcon) {
+    public static DownLoadDialog newInstance(String downLoadUrl, int notificationIcon) {
 
         Bundle args = new Bundle();
         args.putString(Constant.URL, downLoadUrl);
-        args.putInt(Constant.NOTIFICATION_ICON,notificationIcon);
+        args.putInt(Constant.NOTIFICATION_ICON, notificationIcon);
         DownLoadDialog fragment = new DownLoadDialog();
         fragment.setArguments(args);
         return fragment;
@@ -77,7 +72,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         mProgressBar.setMax(100);
 
         Intent intent = new Intent(getActivity(), DownLoadService.class);
-        getActivity().bindService(intent,mConnection , Context.BIND_AUTO_CREATE);
+        getActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
     }
 
@@ -140,14 +135,14 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private void doCancel() {
         mDownLoadService.cancel();
         getActivity().finish();
-        ToastUtils.show(getActivity(),R.string.update_lib_download_cancel);
+        ToastUtils.show(getActivity(), R.string.update_lib_download_cancel);
     }
 
     private void doBackground() {
         mDownLoadService.setBackground(true);
         mDownLoadService.showNotification(currentProgress);
         getActivity().finish();
-        ToastUtils.show(getActivity(),R.string.update_lib_download_in_background);
+        ToastUtils.show(getActivity(), R.string.update_lib_download_in_background);
     }
 
     private final static int LOADING = 1000;
@@ -161,14 +156,14 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
                     Bundle bundle = msg.getData();
                     long bytesRead = bundle.getLong("bytesRead");
                     long contentLength = bundle.getLong("contentLength");
-                    mTvTitle.setText(String.format(TITLE_FORMAT,
-                            Formatter.formatFileSize(getActivity().getApplication(),bytesRead),
-                            Formatter.formatFileSize(getActivity().getApplication(),contentLength)));
+                    mTvTitle.setText(getString(R.string.download_title_format,
+                            Formatter.formatFileSize(getActivity().getApplication(), bytesRead),
+                            Formatter.formatFileSize(getActivity().getApplication(), contentLength)));
                     break;
                 case DONE:
-                    getActivity().startActivity(FileUtils.openApkFile(getActivity(),new File(FileUtils.getApkFilePath(getActivity(),mDownloadUrl))));
+                    getActivity().startActivity(FileUtils.openApkFile(getActivity(), new File(FileUtils.getApkFilePath(getActivity(), mDownloadUrl))));
                     getActivity().finish();
-                    ToastUtils.show(getActivity(),R.string.update_lib_download_finish);
+                    ToastUtils.show(getActivity(), R.string.update_lib_download_finish);
                     break;
             }
         }
