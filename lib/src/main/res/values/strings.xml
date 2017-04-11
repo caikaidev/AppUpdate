@@ -6,5 +6,6 @@
     <string name="update_lib_default_toast">当前已是最新版本</string>
     <string name="update_lib_update_content">更新内容:</string>
     <string name="update_lib_version_code">版本号：</string>
+    <string name="update_lib_download_failed">下载失败</string>
 
 </resources>

@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -50,11 +49,12 @@ public class DownLoadTask extends Thread {
 
             writeToFile(count,in,mFilePath);
 
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }   finally {
+            if (mProgressListener != null) {
+                mProgressListener.onError();
+            }
+        } finally {
             if (connection != null) {
                 connection.disconnect();
             }
@@ -86,6 +86,9 @@ public class DownLoadTask extends Thread {
 
     public interface ProgressListener {
         void done();
+
         void update(long bytesRead, long contentLength);
+
+        void onError();
     }
 }

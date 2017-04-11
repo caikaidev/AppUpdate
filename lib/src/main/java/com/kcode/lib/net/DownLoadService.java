@@ -67,6 +67,14 @@ public class DownLoadService extends Service {
                 }
 
             }
+
+            @Override
+            public void onError() {
+                if (mProgressListener != null) {
+                    mProgressListener.onError();
+                }
+                cancelNotification();
+            }
         });
         mDownLoadTask.start();
     }
@@ -122,6 +130,10 @@ public class DownLoadService extends Service {
         }
         mBuilder.setProgress(100, current, false);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+    }
+
+    private void cancelNotification() {
+        mNotificationManager.cancel(NOTIFICATION_ID);
     }
 
 }

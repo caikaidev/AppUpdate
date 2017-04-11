@@ -44,6 +44,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private TextView mTvTitle;
     private ProgressBar mProgressBar;
     private DownLoadService mDownLoadService;
+    private boolean mMustUpdate;
 
     public static DownLoadDialog newInstance(String downLoadUrl,int notificationIcon) {
 
@@ -55,12 +56,27 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         return fragment;
     }
 
+    public static DownLoadDialog newInstance(String downLoadUrl,int notificationIcon,boolean mustUpdate) {
+
+        Bundle args = new Bundle();
+        args.putString(Constant.URL, downLoadUrl);
+        args.putInt(Constant.NOTIFICATION_ICON,notificationIcon);
+        args.putBoolean(Constant.MUST_UPDATE,mustUpdate);
+        DownLoadDialog fragment = new DownLoadDialog();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_download, container, false);
         mDownloadUrl = getArguments().getString(Constant.URL);
         notificationIcon = getArguments().getInt(Constant.NOTIFICATION_ICON);
+        mMustUpdate = getArguments().getBoolean(Constant.MUST_UPDATE);
+        if (mMustUpdate) {
+            setCancelable(false);
+        }
         return view;
     }
 
@@ -78,6 +94,10 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
 
         Intent intent = new Intent(getActivity(), DownLoadService.class);
         getActivity().bindService(intent,mConnection , Context.BIND_AUTO_CREATE);
+
+        if (mMustUpdate) {
+            view.findViewById(R.id.downLayout).setVisibility(View.GONE);
+        }
 
     }
 
@@ -119,6 +139,11 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
             message.setData(bundle);
             message.sendToTarget();
         }
+
+        @Override
+        public void onError() {
+            mHandler.sendEmptyMessage(ERROE);
+        }
     };
 
     @Override
@@ -152,6 +177,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
 
     private final static int LOADING = 1000;
     private final static int DONE = 1001;
+    private final static int ERROE = 1002;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -169,6 +195,14 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
                     getActivity().startActivity(FileUtils.openApkFile(getActivity(),new File(FileUtils.getApkFilePath(getActivity(),mDownloadUrl))));
                     getActivity().finish();
                     ToastUtils.show(getActivity(),R.string.update_lib_download_finish);
+                    break;
+                case ERROE:
+
+                    ToastUtils.show(getActivity(), R.string.update_lib_download_failed);
+                    if (!mMustUpdate) {
+                        getActivity().finish();
+                    }
+
                     break;
             }
         }

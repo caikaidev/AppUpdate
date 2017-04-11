@@ -61,6 +61,6 @@ public class UpdateActivity extends AbstractUpdateActivity{
 
     @Override
     protected Fragment getDownLoadDialogFragment() {
-        return DownLoadDialog.newInstance(mModel.getUrl(),notificationIcon);
+        return DownLoadDialog.newInstance(mModel.getUrl(),notificationIcon,PackageUtils.getVersionCode(getApplicationContext()) < mModel.getMinSupport());
     }
 }
