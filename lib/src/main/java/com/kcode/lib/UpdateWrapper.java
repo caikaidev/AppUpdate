@@ -29,6 +29,7 @@ public class UpdateWrapper {
     private CheckUpdateTask.Callback mCallback;
     private int mNotificationIcon;
     private long mTime;
+    private boolean mIsShowToast = true;
     private Class<? extends FragmentActivity> mCls;
 
     private UpdateWrapper() {
@@ -58,9 +59,12 @@ public class UpdateWrapper {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtils.show(mContext,
-                                TextUtils.isEmpty(mToastMsg) ?
-                                        mContext.getResources().getString(R.string.update_lib_default_toast) : mToastMsg);
+                        if (mIsShowToast) {
+                            ToastUtils.show(mContext,
+                                    TextUtils.isEmpty(mToastMsg) ?
+                                            mContext.getResources().getString(R.string.update_lib_default_toast) : mToastMsg);
+                        }
+
                     }
                 });
                 return;
@@ -91,6 +95,7 @@ public class UpdateWrapper {
             intent.putExtra(Constant.MODEL, model);
             intent.putExtra(Constant.TOAST_MSG, mToastMsg);
             intent.putExtra(Constant.NOTIFICATION_ICON, mNotificationIcon);
+            intent.putExtra(Constant.IS_SHOW_TOAST_MSG, mIsShowToast);
             context.startActivity(intent);
         } catch (Exception e) {
 
@@ -132,6 +137,11 @@ public class UpdateWrapper {
 
         public Builder setToastMsg(String toastMsg) {
             wrapper.mToastMsg = toastMsg;
+            return this;
+        }
+
+        public Builder setIsShowToast(boolean isShowToast) {
+            wrapper.mIsShowToast = isShowToast;
             return this;
         }
 

@@ -10,8 +10,6 @@ import com.kcode.lib.UpdateWrapper;
 import com.kcode.lib.bean.VersionModel;
 import com.kcode.lib.log.L;
 import com.kcode.lib.net.CheckUpdateTask;
-import com.kcode.permissionslib.main.OnRequestPermissionsCallBack;
-import com.kcode.permissionslib.main.PermissionCompat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,36 +37,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkUpdate(final long time, final Class<? extends FragmentActivity> cls) {
 
-        PermissionCompat.Builder pBuilder = new PermissionCompat.Builder(this);
-        pBuilder.addPermissions(permissions)
-                .addRequestPermissionsCallBack(new OnRequestPermissionsCallBack() {
+        UpdateWrapper.Builder builder = new UpdateWrapper.Builder(getApplicationContext())
+                .setTime(time)
+                .setNotificationIcon(R.mipmap.ic_launcher_round)
+                .setUrl("http://45.78.52.169/app/update.json")
+                .setIsShowToast(false)
+                .setCallback(new CheckUpdateTask.Callback() {
                     @Override
-                    public void onGrant() {
-
-                        UpdateWrapper.Builder builder = new UpdateWrapper.Builder(getApplicationContext())
-                                .setTime(time)
-                                .setNotificationIcon(R.mipmap.ic_launcher_round)
-                                .setUrl("http://45.78.52.169/app/update.json")
-                                .setCallback(new CheckUpdateTask.Callback() {
-                                    @Override
-                                    public void callBack(VersionModel model) {
-                                        L.d(TAG,"new version :" + model.getVersionName());
-                                    }
-                                });
-
-                        if (cls != null) {
-                            builder.setCustomsActivity(cls);
-                        }
-
-                        builder.build().start();
-                    }
-
-                    @Override
-                    public void onDenied(String s) {
-
+                    public void callBack(VersionModel model) {
+                        L.d(TAG,"new version :" + model.getVersionName());
                     }
                 });
-        pBuilder.build().request();
+
+        if (cls != null) {
+            builder.setCustomsActivity(cls);
+        }
+
+        builder.build().start();
 
 
     }

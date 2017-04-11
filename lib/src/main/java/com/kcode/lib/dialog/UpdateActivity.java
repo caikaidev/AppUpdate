@@ -8,12 +8,14 @@ import com.kcode.lib.R;
 import com.kcode.lib.base.AbstractUpdateActivity;
 import com.kcode.lib.bean.VersionModel;
 import com.kcode.lib.common.Constant;
+import com.kcode.lib.utils.PackageUtils;
 
 public class UpdateActivity extends AbstractUpdateActivity{
 
     private int notificationIcon;
     protected VersionModel mModel;
     protected String mToastMsg;
+    protected boolean mIsShowToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,7 @@ public class UpdateActivity extends AbstractUpdateActivity{
         notificationIcon = getIntent().getIntExtra(Constant.NOTIFICATION_ICON, 0);
         mModel = (VersionModel) getIntent().getSerializableExtra(Constant.MODEL);
         mToastMsg = getIntent().getStringExtra(Constant.TOAST_MSG);
+        mIsShowToast = getIntent().getBooleanExtra(Constant.IS_SHOW_TOAST_MSG,true);
         if (mModel == null) {
             finish();
             return;
@@ -45,7 +48,7 @@ public class UpdateActivity extends AbstractUpdateActivity{
 
     @Override
     public void onBackPressed() {
-        if (mModel.isMustUpdate()) {
+        if (PackageUtils.getVersionCode(getApplicationContext()) < mModel.getMinSupport()) {
             return;
         }
         super.onBackPressed();
@@ -53,7 +56,7 @@ public class UpdateActivity extends AbstractUpdateActivity{
 
     @Override
     protected Fragment getUpdateDialogFragment() {
-        return UpdateDialog.newInstance(mModel,mToastMsg);
+        return UpdateDialog.newInstance(mModel,mToastMsg,mIsShowToast);
     }
 
     @Override

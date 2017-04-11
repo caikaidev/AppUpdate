@@ -26,12 +26,14 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     private UpdateActivity mActivity;
     protected VersionModel mModel;
     protected String mToastMsg;
+    protected boolean mIsShowToast;
 
-    public static UpdateDialog newInstance(VersionModel model, String toastMsg) {
+    public static UpdateDialog newInstance(VersionModel model, String toastMsg,boolean isShowToast) {
 
         Bundle args = new Bundle();
         args.putSerializable(Constant.MODEL, model);
         args.putString(Constant.TOAST_MSG, toastMsg);
+        args.putBoolean(Constant.IS_SHOW_TOAST_MSG,isShowToast);
         UpdateDialog fragment = new UpdateDialog();
         fragment.setArguments(args);
         return fragment;
@@ -42,6 +44,7 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
         super.onCreate(savedInstanceState);
         mModel = (VersionModel) getArguments().getSerializable(Constant.MODEL);
         mToastMsg = getArguments().getString(Constant.TOAST_MSG);
+        mIsShowToast = getArguments().getBoolean(Constant.IS_SHOW_TOAST_MSG);
         closeIfNoNewVersionUpdate();
     }
 
@@ -66,19 +69,21 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
 
     private String getContent() {
         StringBuilder sb = new StringBuilder();
-        sb.append("版本号：")
+        sb.append(getActivity().getResources().getString(R.string.update_lib_version_code))
                 .append(mModel.getVersionName())
                 .append("\n")
                 .append("\n")
-                .append("更新内容：")
+                .append(getActivity().getResources().getString(R.string.update_lib_update_content))
                 .append("\n")
                 .append(mModel.getContent().replaceAll("#", "\\\n"));
         return sb.toString();
     }
 
     private void isLatest() {
-        ToastUtils.show(getActivity(),
-                TextUtils.isEmpty(mToastMsg) ? getResources().getString(R.string.update_lib_default_toast) : mToastMsg);
+        if (mIsShowToast) {
+            ToastUtils.show(getActivity(),
+                    TextUtils.isEmpty(mToastMsg) ? getResources().getString(R.string.update_lib_default_toast) : mToastMsg);
+        }
     }
 
     @Override
@@ -119,7 +124,7 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     }
 
     protected void initIfMustUpdate(View view, int id) {
-        if (mModel.isMustUpdate()) {
+        if (PackageUtils.getVersionCode(mActivity.getApplicationContext()) < mModel.getMinSupport()) {
             view.findViewById(id).setVisibility(View.GONE);
             PublicFunctionUtils.setLastCheckTime(getActivity().getApplicationContext(), 0);
         }

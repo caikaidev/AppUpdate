@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.support.v4.content.FileProvider;
 
 import java.io.File;
@@ -16,7 +15,8 @@ import java.io.File;
 public class FileUtils {
 
     public static String getApkFilePath(Context context,String downLoadUrl) {
-        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File externalFile = context.getExternalFilesDir(null);
+        String filePath = externalFile.getAbsolutePath();
         String fileName;
         if (downLoadUrl.endsWith(".apk")) {
             int index = downLoadUrl.lastIndexOf("/");

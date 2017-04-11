@@ -33,7 +33,7 @@ Android 检查更新库
 
   ```groovy
   dependencies {
-           compile 'com.github.fccaikai:AppUpdate:2.0.7'
+           compile 'com.github.fccaikai:AppUpdate:2.0.8'
    }
   ```
 
@@ -47,6 +47,8 @@ UpdateWrapper updateWrapper = new UpdateWrapper.Builder(getApplicationContext())
     	                .setNotificationIcon(R.mipmap.ic_launcher_round)
     	                //set update file url
     	                .setUrl("you update json file url")
+    	                //set showToast. default is true
+    	                .setIsShowToast(false)
 						//add callback ,return new version info
 						.setCallback(new CheckUpdateTask.Callback() {
                                     @Override
@@ -65,7 +67,7 @@ updateWrapper.start();
   "versionCode":1,
   "versionName":"1.0.0",
   "content":"1.新增抢单功能#2.性能优化",//使用 # 来进行换行
-  "mustUpdate":true,	//是否强制 ,true or false
+  "minSupport":1,	//最低支持版本，小于此版本必须强制更新
   "url":"apk download url"
 }
 ```

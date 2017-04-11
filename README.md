@@ -32,7 +32,7 @@ android app update library
 
    ```groovy
    dependencies {
-            compile 'com.github.fccaikai:AppUpdate:2.0.7'
+            compile 'com.github.fccaikai:AppUpdate:2.0.8'
     }
    ```
 
@@ -49,6 +49,8 @@ UpdateWrapper updateWrapper = new UpdateWrapper.Builder(getApplicationContext())
     	                .setUrl("you update json file url")
   						//set customs activity
   						.setCustomsActivity(cls)
+  						 //set showToast. default is true
+    	                .setIsShowToast(false)
   						//add callback ,return new version info
 						.setCallback(new CheckUpdateTask.Callback() {
                                     @Override
@@ -68,7 +70,7 @@ updateWrapper.start();
   "versionCode":1,
   "versionName":"1.0.0",
   "content":"1.add something#2.add something",//use # to wrap
-  "mustUpdate":true,	//must update ,true or false
+  "minSupport":1,	//min support version. while your app versionCode less than  minSupport,You must update app
   "url":"apk download url"
 }
 ```

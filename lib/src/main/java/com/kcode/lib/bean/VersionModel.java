@@ -17,14 +17,14 @@ public class VersionModel implements Serializable{
      * versionCode : 1
      * versionName : 1.0.0
      * content : 更新描述
-     * mustUpdate : true
+     * minSupport : 1
      * url : 文件下载地址
      */
 
     private int versionCode;
     private String versionName;
     private String content;
-    private boolean mustUpdate;
+    private int minSupport;
     private String url;
 
     public int getVersionCode() {
@@ -51,12 +51,12 @@ public class VersionModel implements Serializable{
         this.content = content;
     }
 
-    public boolean isMustUpdate() {
-        return mustUpdate;
+    public int getMinSupport() {
+        return minSupport;
     }
 
-    public void setMustUpdate(boolean mustUpdate) {
-        this.mustUpdate = mustUpdate;
+    public void setMinSupport(int minSupport) {
+        this.minSupport = minSupport;
     }
 
     public String getUrl() {
@@ -74,7 +74,7 @@ public class VersionModel implements Serializable{
             versionName = object.getString("versionName");
             content = object.getString("content");
             url = object.getString("url");
-            mustUpdate = object.getBoolean("mustUpdate");
+            minSupport = object.optInt("minSupport");
 
             return this;
 
