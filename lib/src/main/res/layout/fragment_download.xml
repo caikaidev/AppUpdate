@@ -18,7 +18,7 @@
             android:layout_height="50dp"
             android:elevation="3dp"
             android:gravity="center|left"
-            android:text="正在下载"
+            android:text="@string/update_lib_file_download_text"
             android:textColor="#525252"
             android:textSize="18sp"/>
 
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="8dp"
                 android:background="@drawable/selector_update_lib_download_dialog_button"
-                android:text="停止下载"
+                android:text="@string/update_lib_stop_download"
                 style="?android:attr/borderlessButtonStyle"
                 android:textColor="#4a4a4a"
                 android:textSize="16sp"/>
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_update_lib_download_dialog_button"
                 style="?android:attr/borderlessButtonStyle"
-                android:text="后台下载"
+                android:text="@string/update_lib_background_download"
                 android:textColor="#4a4a4a"
                 android:textSize="16sp"/>
 

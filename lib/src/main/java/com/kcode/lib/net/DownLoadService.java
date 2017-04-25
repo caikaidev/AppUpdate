@@ -42,7 +42,7 @@ public class DownLoadService extends Service {
             public void done() {
                 mNotificationManager.cancel(NOTIFICATION_ID);
                 if (isBackground) {
-                    //下载完成，直接进行安装
+                    //download finish . start to install app
                     startActivity(FileUtils.openApkFile(getApplicationContext(),new File(filePath)));
                 }else {
                     if (mProgressListener != null) {
@@ -115,8 +115,8 @@ public class DownLoadService extends Service {
 
     public void showNotification(int current) {
         mBuilder = new NotificationCompat.Builder(this);
-        mBuilder.setContentTitle("文件下载")
-                .setContentText("正在下载中...")
+        mBuilder.setContentTitle(getResources().getString(R.string.update_lib_file_download))
+                .setContentText(getResources().getString(R.string.update_lib_file_downloading))
                 .setSmallIcon(notificationIcon == 0 ? R.drawable.ic_launcher : notificationIcon);
         mBuilder.setProgress(100, current, false);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());

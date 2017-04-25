@@ -35,7 +35,6 @@ import java.io.File;
 public class DownLoadDialog extends DialogFragment implements View.OnClickListener {
 
     private static final String TAG = "DownLoadDialog";
-    private static final String TITLE_FORMAT = "正在下载（%s/%s）";
     private String mDownloadUrl;
     private int notificationIcon;
     private int currentProgress;
@@ -187,7 +186,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
                     Bundle bundle = msg.getData();
                     long bytesRead = bundle.getLong("bytesRead");
                     long contentLength = bundle.getLong("contentLength");
-                    mTvTitle.setText(String.format(TITLE_FORMAT,
+                    mTvTitle.setText(String.format(getResources().getString(R.string.update_lib_file_download_format),
                             Formatter.formatFileSize(getActivity().getApplication(),bytesRead),
                             Formatter.formatFileSize(getActivity().getApplication(),contentLength)));
                     break;
