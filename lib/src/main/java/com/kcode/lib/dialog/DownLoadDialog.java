@@ -44,6 +44,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private ProgressBar mProgressBar;
     private DownLoadService mDownLoadService;
     private boolean mMustUpdate;
+    private OnFragmentOperation mOnFragmentOperation;
 
     public static DownLoadDialog newInstance(String downLoadUrl,int notificationIcon) {
 
@@ -98,6 +99,21 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
             view.findViewById(R.id.downLayout).setVisibility(View.GONE);
         }
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof OnFragmentOperation) {
+            mOnFragmentOperation = (OnFragmentOperation) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mOnFragmentOperation = null;
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -199,12 +215,22 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
 
                     ToastUtils.show(getActivity(), R.string.update_lib_download_failed);
                     if (!mMustUpdate) {
+                        dismiss();
                         getActivity().finish();
+                    }else {
+                        dismiss();
+                        if (mOnFragmentOperation != null) {
+                            mOnFragmentOperation.onFailed();
+                        }
                     }
 
                     break;
             }
         }
     };
+
+    public interface OnFragmentOperation{
+        void onFailed();
+    }
 
 }

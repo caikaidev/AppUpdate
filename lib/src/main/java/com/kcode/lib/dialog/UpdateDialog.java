@@ -13,6 +13,7 @@ import com.kcode.lib.R;
 import com.kcode.lib.base.AbstractFragment;
 import com.kcode.lib.bean.VersionModel;
 import com.kcode.lib.common.Constant;
+import com.kcode.lib.utils.NetWorkUtils;
 import com.kcode.lib.utils.PackageUtils;
 import com.kcode.lib.utils.PublicFunctionUtils;
 import com.kcode.lib.utils.ToastUtils;
@@ -101,6 +102,9 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     }
 
     protected void onUpdate() {
+        if (!NetWorkUtils.getNetworkStatus(mActivity.getApplicationContext())) {
+            return;
+        }
         mActivity.showDownLoadProgress();
     }
 
