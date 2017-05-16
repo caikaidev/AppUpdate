@@ -3,6 +3,8 @@ package com.kcode.lib.net;
 import com.kcode.lib.bean.VersionModel;
 import com.kcode.lib.log.L;
 
+import org.json.JSONException;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,13 +34,23 @@ public class CheckUpdateTask extends Thread {
         HttpURLConnection connection = null;
         try {
             URL url = new URL(mCheckUpdateUrl);
+            if (mCheckUpdateUrl.startsWith("https://")) {
+                TrustAllCertificates.install();
+            }
+
             connection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(connection.getInputStream());
             String data = read(in);
             L.d(TAG, "result:" + data);
             VersionModel model = new VersionModel();
-            model.parse(data);
-            mCallBack.callBack(model);
+            try {
+                model.parse(data);
+                mCallBack.callBack(model);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                mCallBack.callBack(null);
+            }
+
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

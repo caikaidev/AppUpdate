@@ -1,7 +1,5 @@
 package com.kcode.lib.bean;
 
-import com.kcode.lib.log.L;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,7 +9,7 @@ import java.io.Serializable;
  * Created by caik on 2017/3/8.
  */
 
-public class VersionModel implements Serializable{
+public class VersionModel implements Serializable {
 
     /**
      * versionCode : 1
@@ -67,22 +65,16 @@ public class VersionModel implements Serializable{
         this.url = url;
     }
 
-    public VersionModel parse(String json) {
-        try {
-            JSONObject object = new JSONObject(json);
-            versionCode = object.getInt("versionCode");
-            versionName = object.getString("versionName");
-            content = object.getString("content");
-            url = object.getString("url");
-            minSupport = object.optInt("minSupport");
+    public VersionModel parse(String json) throws JSONException {
+        JSONObject object = new JSONObject(json);
+        versionCode = object.getInt("versionCode");
+        versionName = object.getString("versionName");
+        content = object.getString("content");
+        url = object.getString("url");
+        minSupport = object.optInt("minSupport");
 
-            return this;
+        return this;
 
-        } catch (JSONException e) {
-            L.e("updateLib","数据格式错误");
-            return null;
-
-        }
 
     }
 }

@@ -34,7 +34,13 @@ public class DownLoadTask extends Thread {
         HttpURLConnection connection = null;
         try {
             URL url = new URL(mDownLoadUrl);
+            if (mDownLoadUrl.startsWith("https://")) {
+                TrustAllCertificates.install();
+            }
             connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Connection", "Keep-Alive");
+            connection.setRequestProperty("Keep-Alive", "header");
+
             InputStream in = new BufferedInputStream(connection.getInputStream());
             int count = connection.getContentLength();
             if (count <= 0) {
