@@ -186,8 +186,11 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private void doBackground() {
         mDownLoadService.setBackground(true);
         mDownLoadService.showNotification(currentProgress);
-        getActivity().finish();
-        ToastUtils.show(getActivity(),R.string.update_lib_download_in_background);
+        if (getActivity() != null) {
+            ToastUtils.show(getActivity(),R.string.update_lib_download_in_background);
+            getActivity().finish();
+        }
+
     }
 
     private final static int LOADING = 1000;
