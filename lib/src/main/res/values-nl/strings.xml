@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="update_lib_network_not_available">Het huidige netwerk is niet beschikbaar</string>
+    <string name="update_lib_default_toast">Is momenteel de nieuwste versie</string>
+
+    <!--DownLoadDialog-->
+    <string name="update_lib_download_cancel">Download geannuleerd</string>
+    <string name="update_lib_download_in_background">Bijwerken op de achtergrond</string>
+    <string name="update_lib_download_finish">Download is compleet</string>
+    <string name="update_lib_download_failed">Download mislukt</string>
+    <string name="update_lib_file_download_format">Downloaden（%1$s/%2$s）</string>
+
+    <!--UpdateDialog-->
+    <string name="update_lib_update_content">Update de inhoud:</string>
+    <string name="update_lib_version_code">Versienummer：</string>
+    <string name="update_lib_update">Update</string>
+    <string name="update_lib_cancel">Annuleren</string>
+    <string name="update_lib_dialog_title">Update</string>
+
+    <!--DownLoadService-->
+    <string name="update_lib_file_download">Bestand downloaden</string>
+    <string name="update_lib_file_downloading">Wordt gedownload...</string>
+
+    <!--fragment_download.xml-->
+    <string name="update_lib_file_download_text">Downloaden</string>
+    <string name="update_lib_stop_download">Stop met downloaden</string>
+    <string name="update_lib_background_download">Achtergrond download</string>
+</resources>
