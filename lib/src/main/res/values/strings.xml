@@ -11,15 +11,15 @@
     <string name="update_lib_file_download_format">Downloading（%1$s/%2$s）</string>
 
     <!--UpdateDialog-->
-    <string name="update_lib_update_content">Update content:</string>
-    <string name="update_lib_version_code">Version number：</string>
+    <string name="update_lib_update_content">Release notes&#65306;</string>
+    <string name="update_lib_version_code">Version number&#65306;</string>
     <string name="update_lib_update">Update</string>
     <string name="update_lib_cancel">Cancel</string>
-    <string name="update_lib_dialog_title">Update</string>
+    <string name="update_lib_dialog_title">Update Available</string>
 
     <!--DownLoadService-->
     <string name="update_lib_file_download">Download document</string>
-    <string name="update_lib_file_downloading">Is being downloaded...</string>
+    <string name="update_lib_file_downloading">Is being downloaded&#8230;</string>
 
     <!--fragment_download.xml-->
     <string name="update_lib_file_download_text">Downloading</string>
