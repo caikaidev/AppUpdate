@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="update_lib_network_not_available">当前网络不可用</string>
+    <string name="update_lib_default_toast">当前已是最新版本</string>
+
+    <!--DownLoadDialog-->
+    <string name="update_lib_download_cancel">已取消更新</string>
+    <string name="update_lib_download_in_background">正在后台进行更新</string>
+    <string name="update_lib_download_finish">下载完成</string>
+    <string name="update_lib_download_failed">下载失败</string>
+    <string name="update_lib_file_download_format">正在下载（%1$s/%2$s）</string>
+
+    <!--UpdateDialog-->
+    <string name="update_lib_update_content">更新内容&#65306;</string>
+    <string name="update_lib_version_code">版本号&#65306;</string>
+    <string name="update_lib_update">升级</string>
+    <string name="update_lib_cancel">取消</string>
+    <string name="update_lib_dialog_title">更新提示</string>
+
+    <!--DownLoadService-->
+    <string name="update_lib_file_download">文件下载</string>
+    <string name="update_lib_file_downloading">正在下载中&#8230;</string>
+
+    <!--fragment_download.xml-->
+    <string name="update_lib_file_download_text">正在下载</string>
+    <string name="update_lib_stop_download">停止下载</string>
+    <string name="update_lib_background_download">后台下载</string>
+</resources>
