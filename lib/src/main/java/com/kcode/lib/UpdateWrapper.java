@@ -48,13 +48,12 @@ public class UpdateWrapper {
         if (checkUpdateTime(mTime)) {
             return;
         }
-        new CheckUpdateTask(mUrl, mInnerCallBack).start();
+        new CheckUpdateTask(mContext,mUrl, mInnerCallBack).start();
     }
 
     private CheckUpdateTask.Callback mInnerCallBack = new CheckUpdateTask.Callback() {
         @Override
-        public void callBack(VersionModel model) {
-
+        public void callBack(VersionModel model, boolean hasNewVersion) {
             if (model == null) {
                 mHandler.post(new Runnable() {
                     @Override
@@ -72,11 +71,12 @@ public class UpdateWrapper {
             //记录本次更新时间
             PublicFunctionUtils.setLastCheckTime(mContext, System.currentTimeMillis());
             if (mCallback != null) {
-                mCallback.callBack(model);
+                mCallback.callBack(model,hasNewVersion);
             }
 
             start2Activity(mContext, model);
         }
+
     };
 
     private boolean checkUpdateTime(long time) {

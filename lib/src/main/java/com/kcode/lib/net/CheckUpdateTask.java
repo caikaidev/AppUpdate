@@ -1,7 +1,10 @@
 package com.kcode.lib.net;
 
+import android.content.Context;
+
 import com.kcode.lib.bean.VersionModel;
 import com.kcode.lib.log.L;
+import com.kcode.lib.utils.PackageUtils;
 
 import org.json.JSONException;
 
@@ -21,10 +24,12 @@ public class CheckUpdateTask extends Thread {
 
     private static final String TAG = "CheckUpdateTask";
 
+    private Context mContext;
     private Callback mCallBack;
     private String mCheckUpdateUrl;
 
-    public CheckUpdateTask(String checkUpdateUrl, Callback callBack) {
+    public CheckUpdateTask(Context context,String checkUpdateUrl, Callback callBack) {
+        mContext = context;
         mCheckUpdateUrl = checkUpdateUrl;
         this.mCallBack = callBack;
     }
@@ -45,25 +50,29 @@ public class CheckUpdateTask extends Thread {
             VersionModel model = new VersionModel();
             try {
                 model.parse(data);
-                mCallBack.callBack(model);
+                mCallBack.callBack(model,hasNewVersion(PackageUtils.getVersionCode(mContext),model.getVersionCode()));
             } catch (JSONException e) {
                 e.printStackTrace();
-                mCallBack.callBack(null);
+                mCallBack.callBack(null,false);
             }
 
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            mCallBack.callBack(null);
+            mCallBack.callBack(null,false);
         } catch (IOException e) {
             e.printStackTrace();
-            mCallBack.callBack(null);
+            mCallBack.callBack(null,false);
         }   finally {
             if (connection != null) {
                 connection.disconnect();
             }
         }
 
+    }
+
+    private boolean hasNewVersion(int old,int n) {
+        return old < n;
     }
 
     private static String read(final InputStream in) throws IOException {
@@ -76,6 +85,6 @@ public class CheckUpdateTask extends Thread {
     }
 
     public interface Callback {
-        void callBack(VersionModel model);
+        void callBack(VersionModel model,boolean hasNewVersion);
     }
 }

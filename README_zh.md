@@ -33,7 +33,7 @@ Android 检查更新库
 
   ```groovy
   dependencies {
-           compile 'com.github.fccaikai:AppUpdate:2.1.3'
+           compile 'com.github.fccaikai:AppUpdate:2.1.4'
    }
   ```
 
@@ -52,7 +52,7 @@ UpdateWrapper updateWrapper = new UpdateWrapper.Builder(getApplicationContext())
 						//add callback ,return new version info
 						.setCallback(new CheckUpdateTask.Callback() {
                                     @Override
-                                    public void callBack(VersionModel model) {
+                                    public void callBack(VersionModel model,boolean hasNewVersion) {
                                         Log.d(TAG,"new version :" + 																		model.getVersionName());
                                     }
                          })
