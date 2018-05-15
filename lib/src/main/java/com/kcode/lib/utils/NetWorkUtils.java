@@ -11,9 +11,11 @@ import android.net.NetworkInfo;
 public class NetWorkUtils {
     public static boolean getNetworkStatus(Context context) {
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mNetworkInfo = manager.getActiveNetworkInfo();
-        if (mNetworkInfo != null) {
-            return mNetworkInfo.isAvailable();
+        if (manager != null) {
+            NetworkInfo mNetworkInfo = manager.getActiveNetworkInfo();
+            if (mNetworkInfo != null) {
+                return mNetworkInfo.isAvailable();
+            }
         }
         return false;
     }

@@ -91,7 +91,7 @@ public class DownLoadService extends Service {
     }
 
     public void cancel() {
-        if (mDownLoadBinder != null) {
+        if (mDownLoadTask != null) {
             mDownLoadTask.interrupt();
             mDownLoadTask = null;
         }
