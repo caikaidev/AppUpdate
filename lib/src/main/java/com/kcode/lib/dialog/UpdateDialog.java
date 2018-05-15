@@ -29,12 +29,11 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     protected String mToastMsg;
     protected boolean mIsShowToast;
 
-    public static UpdateDialog newInstance(VersionModel model, String toastMsg,boolean isShowToast) {
-
+    public static UpdateDialog newInstance(VersionModel model, String toastMsg, boolean isShowToast) {
         Bundle args = new Bundle();
         args.putSerializable(Constant.MODEL, model);
         args.putString(Constant.TOAST_MSG, toastMsg);
-        args.putBoolean(Constant.IS_SHOW_TOAST_MSG,isShowToast);
+        args.putBoolean(Constant.IS_SHOW_TOAST_MSG, isShowToast);
         UpdateDialog fragment = new UpdateDialog();
         fragment.setArguments(args);
         return fragment;

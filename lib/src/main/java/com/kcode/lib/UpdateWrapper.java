@@ -36,9 +36,8 @@ public class UpdateWrapper {
     }
 
     public void start() {
-
         if (!NetWorkUtils.getNetworkStatus(mContext)) {
-            ToastUtils.show(mContext,R.string.update_lib_network_not_available);
+            ToastUtils.show(mContext, R.string.update_lib_network_not_available);
             return;
         }
         if (TextUtils.isEmpty(mUrl)) {
@@ -48,7 +47,7 @@ public class UpdateWrapper {
         if (checkUpdateTime(mTime)) {
             return;
         }
-        new CheckUpdateTask(mContext,mUrl, mInnerCallBack).start();
+        new CheckUpdateTask(mContext, mUrl, mInnerCallBack).start();
     }
 
     private CheckUpdateTask.Callback mInnerCallBack = new CheckUpdateTask.Callback() {
@@ -71,7 +70,7 @@ public class UpdateWrapper {
             //记录本次更新时间
             PublicFunctionUtils.setLastCheckTime(mContext, System.currentTimeMillis());
             if (mCallback != null) {
-                mCallback.callBack(model,hasNewVersion);
+                mCallback.callBack(model, hasNewVersion);
             }
 
             start2Activity(mContext, model);
@@ -100,7 +99,6 @@ public class UpdateWrapper {
         } catch (Exception e) {
 
         }
-
     }
 
     public static class Builder {

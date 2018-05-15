@@ -44,17 +44,16 @@ public class DownLoadTask extends Thread {
             InputStream in = new BufferedInputStream(connection.getInputStream());
             int count = connection.getContentLength();
             if (count <= 0) {
-                L.e(TAG,"file length must > 0");
+                L.e(TAG, "file length must > 0");
                 return;
             }
 
             if (in == null) {
-                L.e(TAG,"InputStream not be null");
+                L.e(TAG, "InputStream not be null");
                 return;
             }
 
-            writeToFile(count,in,mFilePath);
-
+            writeToFile(count, in, mFilePath);
         } catch (Exception e) {
             e.printStackTrace();
             if (mProgressListener != null) {
@@ -65,10 +64,9 @@ public class DownLoadTask extends Thread {
                 connection.disconnect();
             }
         }
-
     }
 
-    private void writeToFile(int count,InputStream in,String filePath) throws IOException {
+    private void writeToFile(int count, InputStream in, String filePath) throws IOException {
         int len;
         byte[] buf = new byte[2048];
         File file = new File(filePath);
@@ -80,7 +78,7 @@ public class DownLoadTask extends Thread {
         while ((len = in.read(buf)) != -1) {
             fileOutputStream.write(buf, 0, len);
             bytesRead += len;
-            mProgressListener.update(bytesRead,count);
+            mProgressListener.update(bytesRead, count);
         }
 
         mProgressListener.done();

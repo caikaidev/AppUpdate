@@ -33,7 +33,6 @@ public class UpdateActivity extends AbstractUpdateActivity implements DownLoadDi
         }
 
         showUpdateDialog();
-
     }
 
     private void showUpdateDialog() {

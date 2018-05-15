@@ -14,7 +14,7 @@ import java.io.File;
 
 public class FileUtils {
 
-    public static String getApkFilePath(Context context,String downLoadUrl) {
+    public static String getApkFilePath(Context context, String downLoadUrl) {
         File externalFile = context.getExternalFilesDir(null);
         String filePath = externalFile.getAbsolutePath();
         String fileName;
@@ -33,15 +33,15 @@ public class FileUtils {
         return file.getAbsolutePath();
     }
 
-    public static Intent openApkFile(Context context,File outputFile) {
+    public static Intent openApkFile(Context context, File outputFile) {
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(android.content.Intent.ACTION_VIEW);
         Uri uri;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", outputFile);
-        }else {
+        } else {
             uri = Uri.fromFile(outputFile);
         }
 
