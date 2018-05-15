@@ -154,7 +154,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
 
         @Override
         public void onError() {
-            mHandler.sendEmptyMessage(ERROE);
+            mHandler.sendEmptyMessage(ERROR);
         }
     };
 
@@ -191,7 +191,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
 
     private final static int LOADING = 1000;
     private final static int DONE = 1001;
-    private final static int ERROE = 1002;
+    private final static int ERROR = 1002;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -210,8 +210,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
                     getActivity().finish();
                     ToastUtils.show(getActivity(), R.string.update_lib_download_finish);
                     break;
-                case ERROE:
-
+                case ERROR:
                     ToastUtils.show(getActivity(), R.string.update_lib_download_failed);
                     if (!mMustUpdate) {
                         dismiss();

@@ -46,6 +46,7 @@ public class CheckUpdateTask extends Thread {
             connection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(connection.getInputStream());
             String data = read(in);
+            in.close();
             L.d(TAG, "result:" + data);
             VersionModel model = new VersionModel();
             try {
