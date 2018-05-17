@@ -40,7 +40,7 @@ public class FileUtils {
         Uri uri;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", outputFile);
+            uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider.appupdatefileprovider", outputFile);
         } else {
             uri = Uri.fromFile(outputFile);
         }
