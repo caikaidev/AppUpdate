@@ -30,6 +30,7 @@ public class UpdateWrapper {
     private int mNotificationIcon;
     private long mTime;
     private boolean mIsShowToast = true;
+    private boolean mIsShowBackgroundDownload = true;
     private Class<? extends FragmentActivity> mCls;
 
     private UpdateWrapper() {
@@ -95,6 +96,7 @@ public class UpdateWrapper {
             intent.putExtra(Constant.TOAST_MSG, mToastMsg);
             intent.putExtra(Constant.NOTIFICATION_ICON, mNotificationIcon);
             intent.putExtra(Constant.IS_SHOW_TOAST_MSG, mIsShowToast);
+            intent.putExtra(Constant.IS_SHOW_BACKGROUND_DOWNLOAD, mIsShowBackgroundDownload);
             context.startActivity(intent);
         } catch (Exception e) {
 
@@ -140,6 +142,11 @@ public class UpdateWrapper {
 
         public Builder setIsShowToast(boolean isShowToast) {
             wrapper.mIsShowToast = isShowToast;
+            return this;
+        }
+
+        public Builder setIsShowBackgroundDownload(boolean isShowBackgroundDownload) {
+            wrapper.mIsShowBackgroundDownload = isShowBackgroundDownload;
             return this;
         }
 

@@ -44,6 +44,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private ProgressBar mProgressBar;
     private DownLoadService mDownLoadService;
     private boolean mMustUpdate;
+    private boolean mIsShowBackgroundDownload;
     private OnFragmentOperation mOnFragmentOperation;
 
     public static DownLoadDialog newInstance(String downLoadUrl, int notificationIcon) {
@@ -55,11 +56,12 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         return fragment;
     }
 
-    public static DownLoadDialog newInstance(String downLoadUrl, int notificationIcon, boolean mustUpdate) {
+    public static DownLoadDialog newInstance(String downLoadUrl, int notificationIcon, boolean mustUpdate, boolean isShowBackgroundDownload) {
         Bundle args = new Bundle();
         args.putString(Constant.URL, downLoadUrl);
         args.putInt(Constant.NOTIFICATION_ICON, notificationIcon);
         args.putBoolean(Constant.MUST_UPDATE, mustUpdate);
+        args.putBoolean(Constant.IS_SHOW_BACKGROUND_DOWNLOAD, isShowBackgroundDownload);
         DownLoadDialog fragment = new DownLoadDialog();
         fragment.setArguments(args);
         return fragment;
@@ -75,6 +77,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         if (mMustUpdate) {
             setCancelable(false);
         }
+        mIsShowBackgroundDownload = getArguments().getBoolean(Constant.IS_SHOW_BACKGROUND_DOWNLOAD);
         return view;
     }
 
@@ -95,6 +98,9 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
 
         if (mMustUpdate) {
             view.findViewById(R.id.downLayout).setVisibility(View.GONE);
+        }
+        if (!mIsShowBackgroundDownload) {
+            mBtnBackground.setVisibility(View.GONE);
         }
     }
 
@@ -201,9 +207,10 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
                     Bundle bundle = msg.getData();
                     long bytesRead = bundle.getLong("bytesRead");
                     long contentLength = bundle.getLong("contentLength");
-                    mTvTitle.setText(String.format(getResources().getString(R.string.update_lib_file_download_format),
-                            Formatter.formatFileSize(getActivity().getApplication(), bytesRead),
-                            Formatter.formatFileSize(getActivity().getApplication(), contentLength)));
+                    if (getActivity() != null)
+                        mTvTitle.setText(String.format(getResources().getString(R.string.update_lib_file_download_format),
+                                Formatter.formatFileSize(getActivity().getApplication(), bytesRead),
+                                Formatter.formatFileSize(getActivity().getApplication(), contentLength)));
                     break;
                 case DONE:
                     getActivity().startActivity(FileUtils.openApkFile(getActivity(), new File(FileUtils.getApkFilePath(getActivity(), mDownloadUrl))));
