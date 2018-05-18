@@ -10,11 +10,16 @@ import org.json.JSONException;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by caik on 2017/3/8.
@@ -27,10 +32,14 @@ public class CheckUpdateTask extends Thread {
     private Context mContext;
     private Callback mCallBack;
     private String mCheckUpdateUrl;
+    private Boolean mIsPost;
+    private Map<String, String> mPostParams;
 
-    public CheckUpdateTask(Context context, String checkUpdateUrl, Callback callBack) {
+    public CheckUpdateTask(Context context, String checkUpdateUrl, Boolean isPost, Map<String, String> postParams, Callback callBack) {
         mContext = context;
         mCheckUpdateUrl = checkUpdateUrl;
+        mIsPost = isPost;
+        mPostParams = postParams;
         this.mCallBack = callBack;
     }
 
@@ -44,6 +53,39 @@ public class CheckUpdateTask extends Thread {
             }
 
             connection = (HttpURLConnection) url.openConnection();
+
+            if (mIsPost) {
+                StringBuilder mStringBuilder = new StringBuilder("");
+                if (mPostParams != null) {
+                    Set set = mPostParams.entrySet();
+                    Iterator iterator = set.iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry mEntry = (Map.Entry) iterator.next();
+                        mStringBuilder.append(mEntry.getKey());
+                        mStringBuilder.append("=");
+                        mStringBuilder.append(mEntry.getValue());
+                        if (iterator.hasNext()) {
+                            mStringBuilder.append("&");
+                        }
+                    }
+                }
+
+                String urlParameters = mStringBuilder.toString();
+                byte[] postData = urlParameters.getBytes(Charset.forName("UTF-8"));
+                int postDataLength = postData.length;
+
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                connection.setRequestProperty("charset", "utf-8");
+                connection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+                connection.setDoOutput(true);
+                connection.setUseCaches(false);
+
+                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+                wr.write(postData);
+                wr.flush();
+            }
+
             InputStream in = new BufferedInputStream(connection.getInputStream());
             String data = read(in);
             in.close();

@@ -15,6 +15,8 @@ import com.kcode.lib.utils.NetWorkUtils;
 import com.kcode.lib.utils.PublicFunctionUtils;
 import com.kcode.lib.utils.ToastUtils;
 
+import java.util.Map;
+
 /**
  * Created by caik on 2017/3/8.
  */
@@ -31,6 +33,8 @@ public class UpdateWrapper {
     private long mTime;
     private boolean mIsShowToast = true;
     private boolean mIsShowBackgroundDownload = true;
+    private boolean mIsPost = false;
+    private Map<String, String> mPostParams;
     private Class<? extends FragmentActivity> mCls;
 
     private UpdateWrapper() {
@@ -48,7 +52,7 @@ public class UpdateWrapper {
         if (checkUpdateTime(mTime)) {
             return;
         }
-        new CheckUpdateTask(mContext, mUrl, mInnerCallBack).start();
+        new CheckUpdateTask(mContext, mUrl, mIsPost, mPostParams, mInnerCallBack).start();
     }
 
     private CheckUpdateTask.Callback mInnerCallBack = new CheckUpdateTask.Callback() {
@@ -147,6 +151,16 @@ public class UpdateWrapper {
 
         public Builder setIsShowBackgroundDownload(boolean isShowBackgroundDownload) {
             wrapper.mIsShowBackgroundDownload = isShowBackgroundDownload;
+            return this;
+        }
+
+        public Builder setIsPost(boolean isPost) {
+            wrapper.mIsPost = isPost;
+            return this;
+        }
+
+        public Builder setPostParams(Map<String, String> postParams) {
+            wrapper.mPostParams = postParams;
             return this;
         }
 

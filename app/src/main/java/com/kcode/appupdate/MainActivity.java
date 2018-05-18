@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 .setCallback(new CheckUpdateTask.Callback() {
                     @Override
                     public void callBack(VersionModel model, boolean hasNewVersion) {
-                        L.d(TAG,"has new version:" + hasNewVersion + ";version info :" + model.getVersionName());
+                        L.d(TAG, "has new version:" + hasNewVersion + ";version info :" + model.getVersionName());
                     }
                 });
 
