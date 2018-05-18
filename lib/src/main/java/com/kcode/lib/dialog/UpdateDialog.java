@@ -1,6 +1,7 @@
 package com.kcode.lib.dialog;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -108,10 +109,10 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof UpdateActivity) {
-            mActivity = (UpdateActivity) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof UpdateActivity) {
+            mActivity = (UpdateActivity) context;
         }
     }
 
