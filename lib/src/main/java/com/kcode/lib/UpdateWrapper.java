@@ -32,6 +32,7 @@ public class UpdateWrapper {
     private int mNotificationIcon;
     private long mTime;
     private boolean mIsShowToast = true;
+    private boolean mIsShowNetworkErrorToast = true;
     private boolean mIsShowBackgroundDownload = true;
     private boolean mIsPost = false;
     private Map<String, String> mPostParams;
@@ -42,7 +43,9 @@ public class UpdateWrapper {
 
     public void start() {
         if (!NetWorkUtils.getNetworkStatus(mContext)) {
-            ToastUtils.show(mContext, R.string.update_lib_network_not_available);
+            if (mIsShowNetworkErrorToast) {
+                ToastUtils.show(mContext, R.string.update_lib_network_not_available);
+            }
             return;
         }
         if (TextUtils.isEmpty(mUrl)) {
@@ -146,6 +149,11 @@ public class UpdateWrapper {
 
         public Builder setIsShowToast(boolean isShowToast) {
             wrapper.mIsShowToast = isShowToast;
+            return this;
+        }
+
+        public Builder setIsShowNetworkErrorToast(boolean isShowNetworkErrorToast) {
+            wrapper.mIsShowNetworkErrorToast = isShowNetworkErrorToast;
             return this;
         }
 

@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNotificationIcon(R.mipmap.ic_launcher_round)
                 .setUrl("http://45.78.52.169/app/update.json")
                 .setIsShowToast(false)
+                .setIsShowNetworkErrorToast(true)
                 .setIsShowBackgroundDownload(true)
                 .setCallback(new CheckUpdateTask.Callback() {
                     @Override
