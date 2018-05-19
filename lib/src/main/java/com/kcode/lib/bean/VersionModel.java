@@ -74,7 +74,5 @@ public class VersionModel implements Serializable {
         minSupport = object.optInt("minSupport");
 
         return this;
-
-
     }
 }

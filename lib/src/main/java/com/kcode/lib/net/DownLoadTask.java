@@ -21,6 +21,8 @@ public class DownLoadTask extends Thread {
     private String mFilePath;
     private String mDownLoadUrl;
     private ProgressListener mProgressListener;
+    private InputStream in = null;
+    private FileOutputStream fileOutputStream = null;
 
     public DownLoadTask(String filePath, String downLoadUrl, ProgressListener progressListener) {
         mDownLoadUrl = downLoadUrl;
@@ -30,7 +32,6 @@ public class DownLoadTask extends Thread {
 
     @Override
     public void run() {
-
         HttpURLConnection connection = null;
         try {
             URL url = new URL(mDownLoadUrl);
@@ -41,53 +42,62 @@ public class DownLoadTask extends Thread {
             connection.setRequestProperty("Connection", "Keep-Alive");
             connection.setRequestProperty("Keep-Alive", "header");
 
-            InputStream in = new BufferedInputStream(connection.getInputStream());
+            in = new BufferedInputStream(connection.getInputStream());
             int count = connection.getContentLength();
             if (count <= 0) {
-                L.e(TAG,"file length must > 0");
+                L.e(TAG, "file length must > 0");
                 return;
             }
 
             if (in == null) {
-                L.e(TAG,"InputStream not be null");
+                L.e(TAG, "InputStream not be null");
                 return;
             }
 
-            writeToFile(count,in,mFilePath);
-
+            writeToFile(count, mFilePath);
         } catch (Exception e) {
             e.printStackTrace();
             if (mProgressListener != null) {
                 mProgressListener.onError();
             }
         } finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             if (connection != null) {
                 connection.disconnect();
             }
         }
-
     }
 
-    private void writeToFile(int count,InputStream in,String filePath) throws IOException {
+    private void writeToFile(int count, String filePath) throws IOException {
         int len;
         byte[] buf = new byte[2048];
         File file = new File(filePath);
         if (file.exists()) {
             file.delete();
         }
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        fileOutputStream = new FileOutputStream(file);
         int bytesRead = 0;
         while ((len = in.read(buf)) != -1) {
             fileOutputStream.write(buf, 0, len);
             bytesRead += len;
-            mProgressListener.update(bytesRead,count);
+            mProgressListener.update(bytesRead, count);
         }
 
         mProgressListener.done();
-
-        fileOutputStream.flush();
-        fileOutputStream.close();
-        in.close();
     }
 
     public interface ProgressListener {

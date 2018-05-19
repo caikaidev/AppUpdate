@@ -16,6 +16,7 @@ public class UpdateActivity extends AbstractUpdateActivity implements DownLoadDi
     protected VersionModel mModel;
     protected String mToastMsg;
     protected boolean mIsShowToast;
+    protected boolean mIsShowBackgroundDownload;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +28,13 @@ public class UpdateActivity extends AbstractUpdateActivity implements DownLoadDi
         mModel = (VersionModel) getIntent().getSerializableExtra(Constant.MODEL);
         mToastMsg = getIntent().getStringExtra(Constant.TOAST_MSG);
         mIsShowToast = getIntent().getBooleanExtra(Constant.IS_SHOW_TOAST_MSG, true);
+        mIsShowBackgroundDownload = getIntent().getBooleanExtra(Constant.IS_SHOW_BACKGROUND_DOWNLOAD, true);
         if (mModel == null) {
             finish();
             return;
         }
 
         showUpdateDialog();
-
     }
 
     private void showUpdateDialog() {
@@ -65,7 +66,7 @@ public class UpdateActivity extends AbstractUpdateActivity implements DownLoadDi
 
     @Override
     protected Fragment getDownLoadDialogFragment() {
-        return DownLoadDialog.newInstance(mModel.getUrl(), notificationIcon, PackageUtils.getVersionCode(getApplicationContext()) < mModel.getMinSupport());
+        return DownLoadDialog.newInstance(mModel.getUrl(), notificationIcon, PackageUtils.getVersionCode(getApplicationContext()) < mModel.getMinSupport(), mIsShowBackgroundDownload);
     }
 
     @Override

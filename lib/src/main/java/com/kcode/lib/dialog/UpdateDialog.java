@@ -1,6 +1,7 @@
 package com.kcode.lib.dialog;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -29,12 +30,11 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     protected String mToastMsg;
     protected boolean mIsShowToast;
 
-    public static UpdateDialog newInstance(VersionModel model, String toastMsg,boolean isShowToast) {
-
+    public static UpdateDialog newInstance(VersionModel model, String toastMsg, boolean isShowToast) {
         Bundle args = new Bundle();
         args.putSerializable(Constant.MODEL, model);
         args.putString(Constant.TOAST_MSG, toastMsg);
-        args.putBoolean(Constant.IS_SHOW_TOAST_MSG,isShowToast);
+        args.putBoolean(Constant.IS_SHOW_TOAST_MSG, isShowToast);
         UpdateDialog fragment = new UpdateDialog();
         fragment.setArguments(args);
         return fragment;
@@ -109,10 +109,10 @@ public class UpdateDialog extends AbstractFragment implements View.OnClickListen
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof UpdateActivity) {
-            mActivity = (UpdateActivity) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof UpdateActivity) {
+            mActivity = (UpdateActivity) context;
         }
     }
 

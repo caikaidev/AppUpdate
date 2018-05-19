@@ -15,6 +15,8 @@ import com.kcode.lib.utils.NetWorkUtils;
 import com.kcode.lib.utils.PublicFunctionUtils;
 import com.kcode.lib.utils.ToastUtils;
 
+import java.util.Map;
+
 /**
  * Created by caik on 2017/3/8.
  */
@@ -30,15 +32,20 @@ public class UpdateWrapper {
     private int mNotificationIcon;
     private long mTime;
     private boolean mIsShowToast = true;
+    private boolean mIsShowNetworkErrorToast = true;
+    private boolean mIsShowBackgroundDownload = true;
+    private boolean mIsPost = false;
+    private Map<String, String> mPostParams;
     private Class<? extends FragmentActivity> mCls;
 
     private UpdateWrapper() {
     }
 
     public void start() {
-
         if (!NetWorkUtils.getNetworkStatus(mContext)) {
-            ToastUtils.show(mContext,R.string.update_lib_network_not_available);
+            if (mIsShowNetworkErrorToast) {
+                ToastUtils.show(mContext, R.string.update_lib_network_not_available);
+            }
             return;
         }
         if (TextUtils.isEmpty(mUrl)) {
@@ -48,7 +55,7 @@ public class UpdateWrapper {
         if (checkUpdateTime(mTime)) {
             return;
         }
-        new CheckUpdateTask(mContext,mUrl, mInnerCallBack).start();
+        new CheckUpdateTask(mContext, mUrl, mIsPost, mPostParams, mInnerCallBack).start();
     }
 
     private CheckUpdateTask.Callback mInnerCallBack = new CheckUpdateTask.Callback() {
@@ -71,7 +78,7 @@ public class UpdateWrapper {
             //记录本次更新时间
             PublicFunctionUtils.setLastCheckTime(mContext, System.currentTimeMillis());
             if (mCallback != null) {
-                mCallback.callBack(model,hasNewVersion);
+                mCallback.callBack(model, hasNewVersion);
             }
 
             start2Activity(mContext, model);
@@ -96,11 +103,11 @@ public class UpdateWrapper {
             intent.putExtra(Constant.TOAST_MSG, mToastMsg);
             intent.putExtra(Constant.NOTIFICATION_ICON, mNotificationIcon);
             intent.putExtra(Constant.IS_SHOW_TOAST_MSG, mIsShowToast);
+            intent.putExtra(Constant.IS_SHOW_BACKGROUND_DOWNLOAD, mIsShowBackgroundDownload);
             context.startActivity(intent);
         } catch (Exception e) {
 
         }
-
     }
 
     public static class Builder {
@@ -142,6 +149,26 @@ public class UpdateWrapper {
 
         public Builder setIsShowToast(boolean isShowToast) {
             wrapper.mIsShowToast = isShowToast;
+            return this;
+        }
+
+        public Builder setIsShowNetworkErrorToast(boolean isShowNetworkErrorToast) {
+            wrapper.mIsShowNetworkErrorToast = isShowNetworkErrorToast;
+            return this;
+        }
+
+        public Builder setIsShowBackgroundDownload(boolean isShowBackgroundDownload) {
+            wrapper.mIsShowBackgroundDownload = isShowBackgroundDownload;
+            return this;
+        }
+
+        public Builder setIsPost(boolean isPost) {
+            wrapper.mIsPost = isPost;
+            return this;
+        }
+
+        public Builder setPostParams(Map<String, String> postParams) {
+            wrapper.mPostParams = postParams;
             return this;
         }
 

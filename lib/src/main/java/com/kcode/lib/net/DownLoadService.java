@@ -36,15 +36,15 @@ public class DownLoadService extends Service {
     }
 
     public void startDownLoad(String url) {
-        filePath = FileUtils.getApkFilePath(getApplicationContext(),url);
+        filePath = FileUtils.getApkFilePath(getApplicationContext(), url);
         mDownLoadTask = new DownLoadTask(filePath, url, new DownLoadTask.ProgressListener() {
             @Override
             public void done() {
                 mNotificationManager.cancel(NOTIFICATION_ID);
                 if (isBackground) {
                     //download finish . start to install app
-                    startActivity(FileUtils.openApkFile(getApplicationContext(),new File(filePath)));
-                }else {
+                    startActivity(FileUtils.openApkFile(getApplicationContext(), new File(filePath)));
+                } else {
                     if (mProgressListener != null) {
                         mProgressListener.done();
                     }
@@ -65,7 +65,6 @@ public class DownLoadService extends Service {
                 if (mProgressListener != null) {
                     mProgressListener.update(bytesRead, contentLength);
                 }
-
             }
 
             @Override
@@ -92,11 +91,10 @@ public class DownLoadService extends Service {
     }
 
     public void cancel() {
-        if (mDownLoadBinder != null) {
+        if (mDownLoadTask != null) {
             mDownLoadTask.interrupt();
             mDownLoadTask = null;
         }
-
     }
 
     public void setNotificationIcon(int notificationIcon) {
@@ -120,7 +118,6 @@ public class DownLoadService extends Service {
                 .setSmallIcon(notificationIcon == 0 ? R.drawable.ic_launcher : notificationIcon);
         mBuilder.setProgress(100, current, false);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
-
     }
 
     private void notification(int current) {
@@ -135,5 +132,4 @@ public class DownLoadService extends Service {
     private void cancelNotification() {
         mNotificationManager.cancel(NOTIFICATION_ID);
     }
-
 }

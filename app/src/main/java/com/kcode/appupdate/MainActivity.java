@@ -42,10 +42,12 @@ public class MainActivity extends AppCompatActivity {
                 .setNotificationIcon(R.mipmap.ic_launcher_round)
                 .setUrl("http://45.78.52.169/app/update.json")
                 .setIsShowToast(false)
+                .setIsShowNetworkErrorToast(true)
+                .setIsShowBackgroundDownload(true)
                 .setCallback(new CheckUpdateTask.Callback() {
                     @Override
                     public void callBack(VersionModel model, boolean hasNewVersion) {
-                        L.d(TAG,"has new version:" + hasNewVersion + ";version info :" + model.getVersionName());
+                        L.d(TAG, "has new version:" + hasNewVersion + ";version info :" + model.getVersionName());
                     }
                 });
 

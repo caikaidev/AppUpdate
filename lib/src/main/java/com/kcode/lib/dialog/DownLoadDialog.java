@@ -44,24 +44,24 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private ProgressBar mProgressBar;
     private DownLoadService mDownLoadService;
     private boolean mMustUpdate;
+    private boolean mIsShowBackgroundDownload;
     private OnFragmentOperation mOnFragmentOperation;
 
-    public static DownLoadDialog newInstance(String downLoadUrl,int notificationIcon) {
-
+    public static DownLoadDialog newInstance(String downLoadUrl, int notificationIcon) {
         Bundle args = new Bundle();
         args.putString(Constant.URL, downLoadUrl);
-        args.putInt(Constant.NOTIFICATION_ICON,notificationIcon);
+        args.putInt(Constant.NOTIFICATION_ICON, notificationIcon);
         DownLoadDialog fragment = new DownLoadDialog();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static DownLoadDialog newInstance(String downLoadUrl,int notificationIcon,boolean mustUpdate) {
-
+    public static DownLoadDialog newInstance(String downLoadUrl, int notificationIcon, boolean mustUpdate, boolean isShowBackgroundDownload) {
         Bundle args = new Bundle();
         args.putString(Constant.URL, downLoadUrl);
-        args.putInt(Constant.NOTIFICATION_ICON,notificationIcon);
-        args.putBoolean(Constant.MUST_UPDATE,mustUpdate);
+        args.putInt(Constant.NOTIFICATION_ICON, notificationIcon);
+        args.putBoolean(Constant.MUST_UPDATE, mustUpdate);
+        args.putBoolean(Constant.IS_SHOW_BACKGROUND_DOWNLOAD, isShowBackgroundDownload);
         DownLoadDialog fragment = new DownLoadDialog();
         fragment.setArguments(args);
         return fragment;
@@ -77,6 +77,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         if (mMustUpdate) {
             setCancelable(false);
         }
+        mIsShowBackgroundDownload = getArguments().getBoolean(Constant.IS_SHOW_BACKGROUND_DOWNLOAD);
         return view;
     }
 
@@ -93,12 +94,14 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         mProgressBar.setMax(100);
 
         Intent intent = new Intent(getActivity(), DownLoadService.class);
-        getActivity().bindService(intent,mConnection , Context.BIND_AUTO_CREATE);
+        getActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
         if (mMustUpdate) {
             view.findViewById(R.id.downLayout).setVisibility(View.GONE);
         }
-
+        if (!mIsShowBackgroundDownload) {
+            mBtnBackground.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -157,7 +160,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
 
         @Override
         public void onError() {
-            mHandler.sendEmptyMessage(ERROE);
+            mHandler.sendEmptyMessage(ERROR);
         }
     };
 
@@ -180,22 +183,21 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
     private void doCancel() {
         mDownLoadService.cancel();
         getActivity().finish();
-        ToastUtils.show(getActivity(),R.string.update_lib_download_cancel);
+        ToastUtils.show(getActivity(), R.string.update_lib_download_cancel);
     }
 
     private void doBackground() {
         mDownLoadService.setBackground(true);
         mDownLoadService.showNotification(currentProgress);
         if (getActivity() != null) {
-            ToastUtils.show(getActivity(),R.string.update_lib_download_in_background);
+            ToastUtils.show(getActivity(), R.string.update_lib_download_in_background);
             getActivity().finish();
         }
-
     }
 
     private final static int LOADING = 1000;
     private final static int DONE = 1001;
-    private final static int ERROE = 1002;
+    private final static int ERROR = 1002;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -205,22 +207,22 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
                     Bundle bundle = msg.getData();
                     long bytesRead = bundle.getLong("bytesRead");
                     long contentLength = bundle.getLong("contentLength");
-                    mTvTitle.setText(String.format(getResources().getString(R.string.update_lib_file_download_format),
-                            Formatter.formatFileSize(getActivity().getApplication(),bytesRead),
-                            Formatter.formatFileSize(getActivity().getApplication(),contentLength)));
+                    if (getActivity() != null)
+                        mTvTitle.setText(String.format(getResources().getString(R.string.update_lib_file_download_format),
+                                Formatter.formatFileSize(getActivity().getApplication(), bytesRead),
+                                Formatter.formatFileSize(getActivity().getApplication(), contentLength)));
                     break;
                 case DONE:
-                    getActivity().startActivity(FileUtils.openApkFile(getActivity(),new File(FileUtils.getApkFilePath(getActivity(),mDownloadUrl))));
+                    getActivity().startActivity(FileUtils.openApkFile(getActivity(), new File(FileUtils.getApkFilePath(getActivity(), mDownloadUrl))));
                     getActivity().finish();
-                    ToastUtils.show(getActivity(),R.string.update_lib_download_finish);
+                    ToastUtils.show(getActivity(), R.string.update_lib_download_finish);
                     break;
-                case ERROE:
-
+                case ERROR:
                     ToastUtils.show(getActivity(), R.string.update_lib_download_failed);
                     if (!mMustUpdate) {
                         dismiss();
                         getActivity().finish();
-                    }else {
+                    } else {
                         dismiss();
                         if (mOnFragmentOperation != null) {
                             mOnFragmentOperation.onFailed();
@@ -232,8 +234,7 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
         }
     };
 
-    public interface OnFragmentOperation{
+    public interface OnFragmentOperation {
         void onFailed();
     }
-
 }

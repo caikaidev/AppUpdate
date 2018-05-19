@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="update_lib_network_not_available">The current network is not available</string>
-    <string name="update_lib_default_toast">Is currently the latest version</string>
+    <string name="update_lib_network_not_available">The device was unable to establish an active internet connection</string>
+    <string name="update_lib_default_toast">Currently the latest version is already installed</string>
 
     <!--DownLoadDialog-->
     <string name="update_lib_download_cancel">Download canceled</string>
@@ -18,11 +18,11 @@
     <string name="update_lib_dialog_title">Update Available</string>
 
     <!--DownLoadService-->
-    <string name="update_lib_file_download">Download document</string>
-    <string name="update_lib_file_downloading">Is being downloaded&#8230;</string>
+    <string name="update_lib_file_download">Download file</string>
+    <string name="update_lib_file_downloading">Downloading&#8230;</string>
 
     <!--fragment_download.xml-->
     <string name="update_lib_file_download_text">Downloading</string>
     <string name="update_lib_stop_download">Stop downloading</string>
-    <string name="update_lib_background_download">Background download</string>
+    <string name="update_lib_background_download">Download in background</string>
 </resources>
