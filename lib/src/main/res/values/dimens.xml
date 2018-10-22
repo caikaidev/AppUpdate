@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="au_dialog_max_width">0dp</dimen>
+    <dimen name="au_dialog_horizontal_margin">28dp</dimen>
+</resources>
