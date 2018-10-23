@@ -1,8 +1,11 @@
 package com.kcode.lib.dialog;
 
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Display;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.kcode.lib.R;
 import com.kcode.lib.base.AbstractUpdateActivity;
@@ -22,7 +25,7 @@ public class UpdateActivity extends AbstractUpdateActivity implements DownLoadDi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        getWindow().setLayout(calcWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
         setFinishOnTouchOutside(false);
         notificationIcon = getIntent().getIntExtra(Constant.NOTIFICATION_ICON, 0);
         mModel = (VersionModel) getIntent().getSerializableExtra(Constant.MODEL);
@@ -35,6 +38,21 @@ public class UpdateActivity extends AbstractUpdateActivity implements DownLoadDi
         }
 
         showUpdateDialog();
+    }
+
+    private int calcWidth() {
+        if (getResources().getBoolean(R.bool.au_is_tablet)) {
+            return getResources().getDimensionPixelSize(R.dimen.au_dialog_max_width);
+        } else {
+            WindowManager wm = getWindow().getWindowManager();
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            final int windowWidth = size.x;
+
+            final int windowHorizontalPadding = getResources().getDimensionPixelSize(R.dimen.au_dialog_horizontal_margin);
+            return windowWidth - (windowHorizontalPadding * 2);
+        }
     }
 
     private void showUpdateDialog() {
