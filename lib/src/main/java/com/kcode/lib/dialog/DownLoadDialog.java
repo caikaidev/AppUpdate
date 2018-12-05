@@ -213,22 +213,25 @@ public class DownLoadDialog extends DialogFragment implements View.OnClickListen
                                 Formatter.formatFileSize(getActivity().getApplication(), contentLength)));
                     break;
                 case DONE:
-                    getActivity().startActivity(FileUtils.openApkFile(getActivity(), new File(FileUtils.getApkFilePath(getActivity(), mDownloadUrl))));
-                    getActivity().finish();
-                    ToastUtils.show(getActivity(), R.string.update_lib_download_finish);
+                    if (getActivity() != null) {
+                        getActivity().startActivity(FileUtils.openApkFile(getActivity(), new File(FileUtils.getApkFilePath(getActivity(), mDownloadUrl))));
+                        getActivity().finish();
+                        ToastUtils.show(getActivity(), R.string.update_lib_download_finish);
+                    }
                     break;
                 case ERROR:
-                    ToastUtils.show(getActivity(), R.string.update_lib_download_failed);
+                    if (getActivity() != null)
+                        ToastUtils.show(getActivity(), R.string.update_lib_download_failed);
                     if (!mMustUpdate) {
                         dismiss();
-                        getActivity().finish();
+                        if (getActivity() != null)
+                            getActivity().finish();
                     } else {
                         dismiss();
                         if (mOnFragmentOperation != null) {
                             mOnFragmentOperation.onFailed();
                         }
                     }
-
                     break;
             }
         }
