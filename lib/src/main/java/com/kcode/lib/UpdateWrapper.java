@@ -81,7 +81,9 @@ public class UpdateWrapper {
                 mCallback.callBack(model, hasNewVersion);
             }
 
-            start2Activity(mContext, model);
+            if (hasNewVersion || mIsShowToast) {
+                start2Activity(mContext, model);
+            }
         }
 
     };
