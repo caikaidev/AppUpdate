@@ -154,9 +154,8 @@ updateWrapper.start();
 
 - v7-support
 
-   ```compile 'com.android.support:appcompat-v7:25.2.0'```
+   ```implementation 'androidx.appcompat:appcompat:1.6.1'```
 
   如果你不想使用这两个库，可以使用```exclude```排除
-
 
 

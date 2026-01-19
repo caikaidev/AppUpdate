@@ -2,8 +2,8 @@ package com.kcode.appupdate;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.view.View;
 
 import com.kcode.lib.UpdateWrapper;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         UpdateWrapper.Builder builder = new UpdateWrapper.Builder(getApplicationContext())
                 .setTime(time)
                 .setNotificationIcon(R.mipmap.ic_launcher_round)
-                .setUrl("http://45.78.52.169/app/update.json")
+                .setUrl("https://raw.githubusercontent.com/caikaidev/AppUpdate/master/demo/update.json")
                 .setIsShowToast(false)
                 .setIsShowNetworkErrorToast(true)
                 .setIsShowBackgroundDownload(true)

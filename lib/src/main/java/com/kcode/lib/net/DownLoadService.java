@@ -1,12 +1,14 @@
 package com.kcode.lib.net;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import com.kcode.lib.R;
 import com.kcode.lib.utils.FileUtils;
@@ -19,6 +21,7 @@ import java.io.File;
 
 public class DownLoadService extends Service {
 
+    private static final String CHANNEL_ID = "app_update_download";
     private static final int NOTIFICATION_ID = 0;
     private int notificationIcon;
     private String filePath;
@@ -32,6 +35,14 @@ public class DownLoadService extends Service {
     public void onCreate() {
         super.onCreate();
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    getString(R.string.update_lib_file_downloading),
+                    NotificationManager.IMPORTANCE_LOW
+            );
+            mNotificationManager.createNotificationChannel(channel);
+        }
 
     }
 
@@ -112,7 +123,7 @@ public class DownLoadService extends Service {
     }
 
     public void showNotification(int current) {
-        mBuilder = new NotificationCompat.Builder(this);
+        mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
         mBuilder.setContentTitle(getResources().getString(R.string.update_lib_file_download))
                 .setContentText(getResources().getString(R.string.update_lib_file_downloading))
                 .setSmallIcon(notificationIcon == 0 ? R.drawable.ic_launcher : notificationIcon);

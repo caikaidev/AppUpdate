@@ -1,0 +1,7 @@
+{
+  "versionCode": 2,
+  "versionName": "2.0.0",
+  "content": "1.demo update json on GitHub#2.replace url with your apk",
+  "minSupport": 1,
+  "url": "https://example.com/app.apk"
+}

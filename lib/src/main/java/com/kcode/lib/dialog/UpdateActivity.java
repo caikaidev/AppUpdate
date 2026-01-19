@@ -2,7 +2,7 @@ package com.kcode.lib.dialog;
 
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.Display;
 import android.view.ViewGroup;
 import android.view.WindowManager;
